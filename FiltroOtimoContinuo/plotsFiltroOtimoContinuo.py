@@ -7,7 +7,7 @@ ocupacao = 20
 n_janelamento = 7
 
 # Caminho do arquivo
-caminho_arquivo = "C:/Users/diogo/Desktop/Diogo(Estudos)/Mestrado/TEMC-Processamento-Avan-ado-de-Dados-para-Calorimetria-de-Altas-Energias/FiltroOtimoContinuo/ErrosEstimacao/ErroEstimacao_" + str(ocupacao) + ".xlsx"
+caminho_arquivo = "C:/Users/diogo/Desktop/Diogo(Estudos)/Mestrado/TEMC-Processamento-Avan-ado-de-Dados-para-Calorimetria-de-Altas-Energias1/FiltroOtimoContinuo/ErrosEstimacao/ErroEstimacao_" + str(ocupacao) + ".xlsx"
 
 # Ler o arquivo Excel usando pandas
 dados = pd.read_excel(caminho_arquivo, dtype={'Matriz_Covariancia': str})

@@ -16,15 +16,15 @@ n_janelamento = len(g)
 
 #////////////////////////////////////////// LEITURA DOS ARQUIVOS ///////////////////////////////////////////////
 # Ler os dados do arquivo de ruido
-# data = np.loadtxt('C:/Users/diogo/Desktop/Diogo(Estudos)/Mestrado/TEMC-Processamento-Avan-ado-de-Dados-para-Calorimetria-de-Altas-Energias/FiltroOtimo/Dados Estimação/RuidoOcupacao_50.txt')
+# data = np.loadtxt('C:/Users/diogo/Desktop/Diogo(Estudos)/Mestrado/TEMC-Processamento-Avan-ado-de-Dados-para-Calorimetria-de-Altas-Energias1/FiltroOtimo/Dados Estimação/RuidoOcupacao_50.txt')
 
 #ler os dados de ruido notebook
-data = np.loadtxt('C:/Users/diogo/OneDrive/Área de Trabalho/TEMC-Processamento-Avan-ado-de-Dados-para-Calorimetria-de-Altas-Energias/FiltroOtimo/Dados Estimação/RuidoOcupacao_50.txt')
+data = np.loadtxt('C:/Users/diogo/OneDrive/Área de Trabalho/TEMC-Processamento-Avan-ado-de-Dados-para-Calorimetria-de-Altas-Energias1/FiltroOtimo/Dados Estimação/RuidoOcupacao_50.txt')
 
 #///////////////////////////////////// PARTE PARA OS DADOS SEM  FASE /////////////////////////////////
 #caminho para leitura (alterar aqui quando alterar o ruido e vice versa)
-# caminhoArquivoSemFase = 'C:/Users/diogo/Desktop/Diogo(Estudos)/Mestrado/TEMC-Processamento-Avan-ado-de-Dados-para-Calorimetria-de-Altas-Energias/FiltroOtimo/Dados Estimação/DadosOcupacao_50.txt'
-caminhoArquivoSemFase = 'C:/Users/diogo/OneDrive/Área de Trabalho/TEMC-Processamento-Avan-ado-de-Dados-para-Calorimetria-de-Altas-Energias/FiltroOtimo/Dados Estimação/DadosOcupacao_50.txt'
+# caminhoArquivoSemFase = 'C:/Users/diogo/Desktop/Diogo(Estudos)/Mestrado/TEMC-Processamento-Avan-ado-de-Dados-para-Calorimetria-de-Altas-Energias1/FiltroOtimo/Dados Estimação/DadosOcupacao_50.txt'
+caminhoArquivoSemFase = 'C:/Users/diogo/OneDrive/Área de Trabalho/TEMC-Processamento-Avan-ado-de-Dados-para-Calorimetria-de-Altas-Energias1/FiltroOtimo/Dados Estimação/DadosOcupacao_50.txt'
 
 
 

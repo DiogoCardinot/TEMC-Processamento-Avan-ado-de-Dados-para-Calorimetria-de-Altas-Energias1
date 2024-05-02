@@ -5,11 +5,11 @@ from scipy.integrate import simps
 import os
 
 ########################################## CAMINHO COM OS DADOS DO PULSO DE REFERENCIA #####################################################################
-# nome_arquivo = "C:/Users/diogo/Desktop/Diogo(Estudos)/Mestrado/TEMC-Processamento-Avan-ado-de-Dados-para-Calorimetria-de-Altas-Energias/FiltroOtimoContinuo/pulsehi_physics.txt"
+nome_arquivo = "C:/Users/diogo/Desktop/Diogo(Estudos)/Mestrado/TEMC-Processamento-Avan-ado-de-Dados-para-Calorimetria-de-Altas-Energias1/FiltroOtimoContinuo/pulsehi_physics.txt"
 janelamento = 7  #Escolha o janelamento que deseja gerar o pulso de referência
 
 # notebook
-nome_arquivo = "C:/Users/diogo/OneDrive/Área de Trabalho/TEMC-Processamento-Avan-ado-de-Dados-para-Calorimetria-de-Altas-Energias1/FiltroOtimoContinuo/pulsehi_physics.txt"
+# nome_arquivo = "C:/Users/diogo/OneDrive/Área de Trabalho/TEMC-Processamento-Avan-ado-de-Dados-para-Calorimetria-de-Altas-Energias11/FiltroOtimoContinuo/pulsehi_physics.txt"
 #etapa para criar o vetor de pulso de referência dinamicamente, de acordo com o tamanho do janelamento pedido
 def ler_valores_arquivo(nome_arquivo):
     valores = {} #dicionario onde a chave é o tempo e o valor é a segunda coluna
@@ -52,30 +52,27 @@ tempo = primeira_coluna[indice_central_primeira_coluna - janelamento//2:indice_c
 
 
 ########################################################### CALCULAR DERIVADA ##################################################
-# Incremento na variável independente (nesse caso, o tempo)
-h = 25
 
-# Função para calcular a derivada em um ponto específico
-def func(x):
-    return np.interp(x, np.arange(len(g)), g)
-
-# Calcular a derivada em cada ponto do vetor g
-derivada = [derivative(func, i, dx=h) for i in range(len(g))]
-
-# Calcular a área sob a curva original pelo método de Simpson
-area = simps(g, dx=h)
-
-# Normalizar a derivada dividindo pela área original
-derivada_normalizada = [d * area for d in derivada]
-
-
-print("Derivada normalizada:", derivada_normalizada)
-
+if janelamento==7:
+    derivada_normalizada = [0.00005472,0.00367031,0.0310805,0.00000016,-0.0243455,-0.00800683,-0.00243336]
+elif janelamento==9: 
+    derivada_normalizada = [0,0.00005472,0.00367031,0.0310805,0.00000016,-0.0243455,-0.00800683,-0.00243336,-0.00053613]
+elif janelamento==11:
+    derivada_normalizada = [0,0,0.00005472,0.00367031,0.0310805,0.00000016,-0.0243455,-0.00800683,-0.00243336,-0.00053613,-0.00215426]
+elif janelamento==13:
+    derivada_normalizada = [0,0,0,0.00005472,0.00367031,0.0310805,0.00000016,-0.0243455,-0.00800683,-0.00243336,-0.00053613,-0.00215426,0]
+elif janelamento==15:
+    derivada_normalizada = [0,0,0,0,0.00005472,0.00367031,0.0310805,0.00000016,-0.0243455,-0.00800683,-0.00243336,-0.00053613,-0.00215426,0,0]
+elif janelamento==17:
+    derivada_normalizada = [0,0,0,0,0,0.00005472,0.00367031,0.0310805,0.00000016,-0.0243455,-0.00800683,-0.00243336,-0.00053613,-0.00215426,0,0,0]
+elif janelamento==19:
+    derivada_normalizada = [0,0,0,0,0,0,0.00005472,0.00367031,0.0310805,0.00000016,-0.0243455,-0.00800683,-0.00243336,-0.00053613,-0.00215426,0,0,0,0]
+    
 # Caminho do arquivo onde os dados do pulso e sua referência serão salvos
-# nome_arquivo_saida = "C:/Users/diogo/Desktop/Diogo(Estudos)/Mestrado/TEMC-Processamento-Avan-ado-de-Dados-para-Calorimetria-de-Altas-Energias/FiltroOtimoContinuo/valores_g_derivada.txt"
+nome_arquivo_saida = "C:/Users/diogo/Desktop/Diogo(Estudos)/Mestrado/TEMC-Processamento-Avan-ado-de-Dados-para-Calorimetria-de-Altas-Energias1/FiltroOtimoContinuo/valores_g_derivada.txt"
 
 # notebook
-nome_arquivo_saida = "C:/Users/diogo/OneDrive/Área de Trabalho/TEMC-Processamento-Avan-ado-de-Dados-para-Calorimetria-de-Altas-Energias1/FiltroOtimoContinuo/valores_g_derivada.txt"
+# nome_arquivo_saida = "C:/Users/diogo/OneDrive/Área de Trabalho/TEMC-Processamento-Avan-ado-de-Dados-para-Calorimetria-de-Altas-Energias11/FiltroOtimoContinuo/valores_g_derivada.txt"
 titulos= ["Janelamento", "g", "derivada_g"]
 # Verificar se o arquivo existe, e se não, criar
 if not os.path.exists(nome_arquivo_saida):
@@ -106,10 +103,10 @@ else:
     print(f"Dados adicionados para janelamento {janelamento}")
 
 # Plotar
-plt.plot(tempo, g, color="C0", label=r'$g$')
-plt.plot(tempo, derivada_normalizada, color='C1', label=r'$\dot g$')
-plt.xlabel('Tempo(ns)')
-plt.ylabel(r'$g$ e $\dot g$')
-plt.title(r'Pulso de referência $\times$ Tempo')
-plt.legend(loc=0)
-plt.show()
+# plt.plot(tempo, g, color="C0", label=r'$g$')
+# plt.plot(tempo, derivada_normalizada, color='C1', label=r'$\dot g$')
+# plt.xlabel('Tempo(ns)')
+# plt.ylabel(r'$g$ e $\dot g$')
+# plt.title(r'Pulso de referência $\times$ Tempo')
+# plt.legend(loc=0)
+# plt.show()
