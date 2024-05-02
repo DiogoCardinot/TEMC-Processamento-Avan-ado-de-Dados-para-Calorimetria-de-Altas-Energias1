@@ -7,8 +7,10 @@ pedestal = 30
 ocupacao = 20
 
 ############################################### CARREGAR INFORMAÇÕES DO PULSO DE REFERÊNCIA E DERIVADA ##################################################
-nome_arquivo_saida = "C:/Users/diogo/Desktop/Diogo(Estudos)/Mestrado/TEMC-Processamento-Avan-ado-de-Dados-para-Calorimetria-de-Altas-Energias/FiltroOtimoContinuo/valores_g_derivada.txt"
+# nome_arquivo_saida = "C:/Users/diogo/Desktop/Diogo(Estudos)/Mestrado/TEMC-Processamento-Avan-ado-de-Dados-para-Calorimetria-de-Altas-Energias/FiltroOtimoContinuo/valores_g_derivada.txt"
 
+# notebook
+nome_arquivo_saida = "C:/Users/diogo/OneDrive/Área de Trabalho/TEMC-Processamento-Avan-ado-de-Dados-para-Calorimetria-de-Altas-Energias1/FiltroOtimoContinuo/valores_g_derivada.txt"
 # Inicializar variáveis para armazenar os dados de g e sua derivada
 g = None
 derivada_g = None
@@ -37,7 +39,10 @@ else:
 
 #################################### LER AS AMOSTRAS E AS AMPLITUDES ASSOCIADAS DE ACORDO COM O JANELAMENTO ###################################################################
 
-nome_arquivo_amostras = "C:/Users/diogo/Desktop/Diogo(Estudos)/Mestrado/TEMC-Processamento-Avan-ado-de-Dados-para-Calorimetria-de-Altas-Energias/FiltroOtimoContinuo/Dados_Ocupacoes/OC_"+str(ocupacao)+".txt"
+# nome_arquivo_amostras = "C:/Users/diogo/Desktop/Diogo(Estudos)/Mestrado/TEMC-Processamento-Avan-ado-de-Dados-para-Calorimetria-de-Altas-Energias/FiltroOtimoContinuo/Dados_Ocupacoes/OC_"+str(ocupacao)+".txt"
+
+# notebook
+nome_arquivo_amostras = "C:/Users/diogo/OneDrive/Área de Trabalho/TEMC-Processamento-Avan-ado-de-Dados-para-Calorimetria-de-Altas-Energias1/FiltroOtimoContinuo/Dados_Ocupacoes/OC_"+str(ocupacao)+".txt"
 dados_Ocupacao = np.genfromtxt(nome_arquivo_amostras, delimiter=",", skip_header=1)
 
 # Calcular o número de linhas para a matriz
@@ -70,7 +75,10 @@ for i in range(num_linhas):
 
 ########################################################### COMECAR O PROCESSO DO FILTRO ÓTIMO DE FATO #####################################################################
 
-caminho_arquivo_ruido= np.loadtxt('C:/Users/diogo/Desktop/Diogo(Estudos)/Mestrado/TEMC-Processamento-Avan-ado-de-Dados-para-Calorimetria-de-Altas-Energias/FiltroOtimo/Dados Estimação/RuidoOcupacao_'+str(ocupacao)+'.txt')
+# caminho_arquivo_ruido= np.loadtxt('C:/Users/diogo/Desktop/Diogo(Estudos)/Mestrado/TEMC-Processamento-Avan-ado-de-Dados-para-Calorimetria-de-Altas-Energias/FiltroOtimo/Dados Estimação/RuidoOcupacao_'+str(ocupacao)+'.txt')
+
+# notebook
+caminho_arquivo_ruido = np.loadtxt('C:\Users\diogo\OneDrive\Área de Trabalho\TEMC-Processamento-Avan-ado-de-Dados-para-Calorimetria-de-Altas-Energias1/FiltroOtimo/Dados Estimação/RuidoOcupacao_'+str(ocupacao)+'.txt')
 
 # Calcular a matriz de covariância do ruido
 cov_matrix_ruido = np.cov(caminho_arquivo_ruido, rowvar=False)
@@ -164,7 +172,10 @@ desvioPadraoErroEstimacao = np.std(erroEstimacaoAmplitude)
 ############################################# SALVAR AS INFORMAÇÕES RELEVANTES EM UM TXT #############################################################
 
 # Caminho do arquivo onde os dados do pulso e sua referência serão salvos
-nome_arquivo_saida = "C:/Users/diogo/Desktop/Diogo(Estudos)/Mestrado/TEMC-Processamento-Avan-ado-de-Dados-para-Calorimetria-de-Altas-Energias/FiltroOtimoContinuo/ErrosEstimacao/ErroEstimacao_"+str(ocupacao)+".txt"
+# nome_arquivo_saida = "C:/Users/diogo/Desktop/Diogo(Estudos)/Mestrado/TEMC-Processamento-Avan-ado-de-Dados-para-Calorimetria-de-Altas-Energias/FiltroOtimoContinuo/ErrosEstimacao/ErroEstimacao_"+str(ocupacao)+".txt"
+
+# notebook
+nome_arquivo_saida = "C:\Users\diogo\OneDrive\Área de Trabalho\TEMC-Processamento-Avan-ado-de-Dados-para-Calorimetria-de-Altas-Energias1/FiltroOtimoContinuo/ErrosEstimacao/ErroEstimacao_"+str(ocupacao)+".txt"
 
 # Definir os títulos das colunas
 titulos = ['Janelamento', 'Pesos', 'Matriz_Covariancia', 'Erro_Estimacao_Amplitude', 'Media_Erro_Estimacao', 'Desvio_Padrao_Erro_Estimacao']
@@ -209,8 +220,10 @@ dados_dict = {
 dados_df = pd.DataFrame(dados_dict)
 
 # Caminho do arquivo Excel de saída
-caminho_arquivo_excel = "C:/Users/diogo/Desktop/Diogo(Estudos)/Mestrado/TEMC-Processamento-Avan-ado-de-Dados-para-Calorimetria-de-Altas-Energias/FiltroOtimoContinuo/ErrosEstimacao/ErroEstimacao_"+str(ocupacao)+".xlsx"
+# caminho_arquivo_excel = "C:/Users/diogo/Desktop/Diogo(Estudos)/Mestrado/TEMC-Processamento-Avan-ado-de-Dados-para-Calorimetria-de-Altas-Energias/FiltroOtimoContinuo/ErrosEstimacao/ErroEstimacao_"+str(ocupacao)+".xlsx"
 
+# notebook
+caminho_arquivo_excel = "C:\Users\diogo\OneDrive\Área de Trabalho\TEMC-Processamento-Avan-ado-de-Dados-para-Calorimetria-de-Altas-Energias1/FiltroOtimoContinuo/ErrosEstimacao/ErroEstimacao_"+str(ocupacao)+".xlsx"
 # Verificar se o arquivo Excel já existe
 arquivo_existe = os.path.exists(caminho_arquivo_excel)
 

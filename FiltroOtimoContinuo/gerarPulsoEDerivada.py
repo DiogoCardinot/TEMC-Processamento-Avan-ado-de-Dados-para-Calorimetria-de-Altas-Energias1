@@ -5,9 +5,11 @@ from scipy.integrate import simps
 import os
 
 ########################################## CAMINHO COM OS DADOS DO PULSO DE REFERENCIA #####################################################################
-nome_arquivo = "C:/Users/diogo/Desktop/Diogo(Estudos)/Mestrado/TEMC-Processamento-Avan-ado-de-Dados-para-Calorimetria-de-Altas-Energias/FiltroOtimoContinuo/pulsehi_physics.txt"
+# nome_arquivo = "C:/Users/diogo/Desktop/Diogo(Estudos)/Mestrado/TEMC-Processamento-Avan-ado-de-Dados-para-Calorimetria-de-Altas-Energias/FiltroOtimoContinuo/pulsehi_physics.txt"
 janelamento = 7  #Escolha o janelamento que deseja gerar o pulso de referência
 
+# notebook
+nome_arquivo = "C:/Users/diogo/OneDrive/Área de Trabalho/TEMC-Processamento-Avan-ado-de-Dados-para-Calorimetria-de-Altas-Energias1/FiltroOtimoContinuo/pulsehi_physics.txt"
 #etapa para criar o vetor de pulso de referência dinamicamente, de acordo com o tamanho do janelamento pedido
 def ler_valores_arquivo(nome_arquivo):
     valores = {} #dicionario onde a chave é o tempo e o valor é a segunda coluna
@@ -70,8 +72,10 @@ derivada_normalizada = [d * area for d in derivada]
 print("Derivada normalizada:", derivada_normalizada)
 
 # Caminho do arquivo onde os dados do pulso e sua referência serão salvos
-nome_arquivo_saida = "C:/Users/diogo/Desktop/Diogo(Estudos)/Mestrado/TEMC-Processamento-Avan-ado-de-Dados-para-Calorimetria-de-Altas-Energias/FiltroOtimoContinuo/valores_g_derivada.txt"
+# nome_arquivo_saida = "C:/Users/diogo/Desktop/Diogo(Estudos)/Mestrado/TEMC-Processamento-Avan-ado-de-Dados-para-Calorimetria-de-Altas-Energias/FiltroOtimoContinuo/valores_g_derivada.txt"
 
+# notebook
+nome_arquivo_saida = "C:/Users/diogo/OneDrive/Área de Trabalho/TEMC-Processamento-Avan-ado-de-Dados-para-Calorimetria-de-Altas-Energias1/FiltroOtimoContinuo/valores_g_derivada.txt"
 titulos= ["Janelamento", "g", "derivada_g"]
 # Verificar se o arquivo existe, e se não, criar
 if not os.path.exists(nome_arquivo_saida):
