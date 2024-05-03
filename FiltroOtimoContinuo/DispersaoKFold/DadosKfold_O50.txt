@@ -1,0 +1,2 @@
+Janelamento media desvioPadrao
+7 50.025759292417405 41.732215395592426

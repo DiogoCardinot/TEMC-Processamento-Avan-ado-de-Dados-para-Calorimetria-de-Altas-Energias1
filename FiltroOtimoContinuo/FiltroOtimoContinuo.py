@@ -1,11 +1,15 @@
 import numpy as np
 import os
 import pandas as pd
+import matplotlib.pyplot as plt
+
+from sklearn.model_selection import KFold
+from sklearn.metrics import mean_squared_error
 
 # Número do janelamento desejado
 n_janelamento = 7
 pedestal = 30
-ocupacao = 20
+ocupacao = 100
 
 ############################################### CARREGAR INFORMAÇÕES DO PULSO DE REFERÊNCIA E DERIVADA ##################################################
 nome_arquivo_saida = "C:/Users/diogo/Desktop/Diogo(Estudos)/Mestrado/TEMC-Processamento-Avan-ado-de-Dados-para-Calorimetria-de-Altas-Energias1/FiltroOtimoContinuo/valores_g_derivada.txt"
@@ -71,11 +75,10 @@ amplitude_Real = np.zeros(num_linhas)
 for i in range(num_linhas):
     amplitude_Real[i] = dados_Ocupacao[i + indice_central, 2] #salva a amplitude como sendo os dados na posição atual mais o indice central da amostra em questão e pega a coluna 2 ("Amplitude")
 
-# print("Amplitudes real do sinal:\n" , amplitude_Real)
+print("Amplitudes real do sinal:\n" , amplitude_Real)
 
 
 ########################################################### COMECAR O PROCESSO DO FILTRO ÓTIMO DE FATO #####################################################################
-
 caminho_arquivo_ruido= np.loadtxt('C:/Users/diogo/Desktop/Diogo(Estudos)/Mestrado/TEMC-Processamento-Avan-ado-de-Dados-para-Calorimetria-de-Altas-Energias1/FiltroOtimo/Dados Estimação/RuidoOcupacao_'+str(ocupacao)+'.txt')
 
 # notebook
@@ -169,18 +172,86 @@ desvioPadraoErroEstimacao = np.std(erroEstimacaoAmplitude)
 # print("Desvio padrao do erro de estimacao:", desvioPadraoErroEstimacao)
 
 
+##################################################### KFOLD ###############################################
+# Número de folds para a validação cruzada
+k = 10
+
+# Inicialize uma lista para armazenar as amplitudes estimadas por fold
+amplitude_estimada_total = []
+
+# Instancie o objeto KFold e itere sobre os folds
+kf = KFold(n_splits=k)
+for train_index, test_index in kf.split(amplitude_Estimada):
+    amplitude_Estimada = np.array(amplitude_Estimada)
+    X_train, X_test = amplitude_Estimada[train_index], amplitude_Estimada[test_index]
+    
+    amplitude_estimada_total.extend(X_test)   #adiciona a nova lista ao final
+    # print("AmplitudeEstimadaKFold", amplitude_estimada_total)
+
+# print("Tamanho da amplitude estimada kfold", len(amplitude_estimada_total))
+
+erroEstimacaoAmplitudeKFold = []
+for i in range(len(amplitude_estimada_total)):
+    erro = amplitude_Real[i] - amplitude_estimada_total[i]
+    erroEstimacaoAmplitudeKFold.append(erro)
+
+mediaErroEstimacaoKFold = np.mean(erroEstimacaoAmplitudeKFold)
+desvioPadraoErroEstimacaoKFold = np.std(erroEstimacaoAmplitudeKFold)
+
+# plt.hist(erroEstimacaoAmplitudeKFold, bins=500, histtype='step', label = f"($\mu$={mediaErroEstimacaoKFold:.3f}, $\sigma$={desvioPadraoErroEstimacaoKFold:.3f}).")
+# plt.xlabel('Erro de Estimação de Amplitude')
+# plt.ylabel('Frequência')
+# plt.title(f'Histograma do Erro de Estimação de Amplitude para Ocupação {ocupacao}')
+# plt.legend()
+# plt.show()
+
+# Organiza os dados em uma matriz
+dados_kfold = np.array([[int(n_janelamento), float(mediaErroEstimacaoKFold), float(desvioPadraoErroEstimacaoKFold)]])
+
+# Caminho do arquivo de saída
+caminho_arquivo_saida_kfold = "C:/Users/diogo/Desktop/Diogo(Estudos)/Mestrado/TEMC-Processamento-Avan-ado-de-Dados-para-Calorimetria-de-Altas-Energias1/FiltroOtimoContinuo/DispersaoKFold/DadosKfold_O"+str(ocupacao)+".txt"
+
+# notebook
+# nome_arquivo_saida = "C:/Users/diogo/OneDrive/Área de Trabalho/TEMC-Processamento-Avan-ado-de-Dados-para-Calorimetria-de-Altas-Energias11/FiltroOtimoContinuo/valores_g_derivada.txt"
+titulos= ["Janelamento", "media", "desvioPadrao"]
+# Verificar se o arquivo existe, e se não, criar
+if not os.path.exists(caminho_arquivo_saida_kfold):
+    with open(caminho_arquivo_saida_kfold, 'w') as arquivo:
+        arquivo.write(' '.join(titulos) + '\n')
+
+# Verificar se já existe uma linha com o número do janelamento
+with open(caminho_arquivo_saida_kfold, 'r') as arquivo_leitura:
+    linhas = arquivo_leitura.readlines()
+
+linha_existente = None
+for indice, linha in enumerate(linhas):
+    if linha.startswith(str(n_janelamento) + ' '):
+        linha_existente = indice
+        break
+
+# Se a linha existir, sobrescrever com os novos valores
+if linha_existente is not None:
+    linhas[linha_existente] = f"{n_janelamento} {mediaErroEstimacaoKFold} {desvioPadraoErroEstimacaoKFold}\n"
+    # Reescrever todo o arquivo com as alterações
+    with open(caminho_arquivo_saida_kfold, 'w') as arquivo_escrita:
+        arquivo_escrita.writelines(linhas)
+    print(f"Dados atualizados para janelamento {n_janelamento}")
+else:
+    # Se a linha não existir, adicionar como uma nova linha no final do arquivo
+    with open(caminho_arquivo_saida_kfold, 'a') as arquivo:
+        arquivo.write(f"{n_janelamento} {mediaErroEstimacaoKFold} {desvioPadraoErroEstimacaoKFold}\n")
+    print(f"Dados adicionados para janelamento {n_janelamento}")
 
 ############################################# SALVAR AS INFORMAÇÕES RELEVANTES EM UM EXCEL #############################################################
 
 # Definir os títulos das colunas
-titulos = ['Ocupacao', 'Pesos', 'Matriz_Covariancia', 'Erro_Estimacao_Amplitude', 'Media_Erro_Estimacao', 'Desvio_Padrao_Erro_Estimacao']
+titulos = ['Ocupacao', 'Pesos', 'Matriz_Covariancia', 'Media_Erro_Estimacao', 'Desvio_Padrao_Erro_Estimacao']
 
 # Criar um DataFrame com os seus dados
 dados_dict = {
     'Ocupacao': [ocupacao],
     'Pesos': [w],
     'Matriz_Covariancia': [cov_matrix_ruido],
-    'Erro_Estimacao_Amplitude': [erroEstimacaoAmplitude],
     'Media_Erro_Estimacao': [mediaErroEstimacao],
     'Desvio_Padrao_Erro_Estimacao': [desvioPadraoErroEstimacao]
 }

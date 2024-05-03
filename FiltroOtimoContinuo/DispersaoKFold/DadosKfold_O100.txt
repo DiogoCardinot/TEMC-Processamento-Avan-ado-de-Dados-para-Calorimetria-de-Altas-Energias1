@@ -1,0 +1,2 @@
+Janelamento media desvioPadrao
+7 99.9237204068171 51.13829918391575
