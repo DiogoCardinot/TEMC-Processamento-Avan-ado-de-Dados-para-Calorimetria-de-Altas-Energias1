@@ -1,10 +1,11 @@
 import numpy as np
 import os
 import pandas as pd
+
 # Número do janelamento desejado
 n_janelamento = 7
 pedestal = 30
-ocupacao = 30
+ocupacao = 20
 
 ############################################### CARREGAR INFORMAÇÕES DO PULSO DE REFERÊNCIA E DERIVADA ##################################################
 nome_arquivo_saida = "C:/Users/diogo/Desktop/Diogo(Estudos)/Mestrado/TEMC-Processamento-Avan-ado-de-Dados-para-Calorimetria-de-Altas-Energias1/FiltroOtimoContinuo/valores_g_derivada.txt"
@@ -169,44 +170,10 @@ desvioPadraoErroEstimacao = np.std(erroEstimacaoAmplitude)
 
 
 
-############################################# SALVAR AS INFORMAÇÕES RELEVANTES EM UM TXT #############################################################
-
-# Caminho do arquivo onde os dados do pulso e sua referência serão salvos
-# nome_arquivo_saida = "C:/Users/diogo/Desktop/Diogo(Estudos)/Mestrado/TEMC-Processamento-Avan-ado-de-Dados-para-Calorimetria-de-Altas-Energias1/FiltroOtimoContinuo/ErrosEstimacao/ErroEstimacao_J"+str(n_janelamento)+".txt"
-
-# notebook
-# nome_arquivo_saida = "C:\Users\diogo\OneDrive\Área de Trabalho\TEMC-Processamento-Avan-ado-de-Dados-para-Calorimetria-de-Altas-Energias11/FiltroOtimoContinuo/ErrosEstimacao/ErroEstimacao_"+str(ocupacao)+".txt"
+############################################# SALVAR AS INFORMAÇÕES RELEVANTES EM UM EXCEL #############################################################
 
 # Definir os títulos das colunas
 titulos = ['Ocupacao', 'Pesos', 'Matriz_Covariancia', 'Erro_Estimacao_Amplitude', 'Media_Erro_Estimacao', 'Desvio_Padrao_Erro_Estimacao']
-
-# # Verificar se o arquivo existe, e se não, criar
-# if not os.path.exists(nome_arquivo_saida):
-#     with open(nome_arquivo_saida, 'w') as arquivo:
-#         arquivo.write(';'.join(titulos) + '\n')
-
-# # Verificar se já existe uma linha com o número do janelamento
-# with open(nome_arquivo_saida, 'r') as arquivo_leitura:
-#     linhas = arquivo_leitura.readlines()
-
-# linha_existente = None
-# for indice, linha in enumerate(linhas):
-#     if linha.startswith(str(n_janelamento) + ';'):
-#         linha_existente = indice
-#         break
-
-# # Se a linha existir, sobrescrever com os novos valores
-# if linha_existente is not None:
-#     linhas[linha_existente] = f"{n_janelamento};{w};{cov_matrix_ruido};{erroEstimacaoAmplitude};{mediaErroEstimacao};{desvioPadraoErroEstimacao}\n"
-#     # Reescrever todo o arquivo com as alterações
-#     with open(nome_arquivo_saida, 'w') as arquivo_escrita:
-#         arquivo_escrita.writelines(linhas)
-#     print(f"Dados atualizados para janelamento {n_janelamento}")
-# else:
-#     # Se a linha não existir, adicionar como uma nova linha no final do arquivo
-#     with open(nome_arquivo_saida, 'a') as arquivo:
-#         arquivo.write(f"{n_janelamento};{w};{cov_matrix_ruido};{erroEstimacaoAmplitude};{mediaErroEstimacao};{desvioPadraoErroEstimacao}\n")
-#     print(f"Dados adicionados para janelamento {n_janelamento}")
 
 # Criar um DataFrame com os seus dados
 dados_dict = {
@@ -224,24 +191,39 @@ caminho_arquivo_excel = "C:/Users/diogo/Desktop/Diogo(Estudos)/Mestrado/TEMC-Pro
 
 # notebook
 # caminho_arquivo_excel = "C:\Users\diogo\OneDrive\Área de Trabalho\TEMC-Processamento-Avan-ado-de-Dados-para-Calorimetria-de-Altas-Energias11/FiltroOtimoContinuo/ErrosEstimacao/ErroEstimacaoJ_"+str(n_janelamento)+".xlsx"
+
 # Verificar se o arquivo Excel já existe
 arquivo_existe = os.path.exists(caminho_arquivo_excel)
 
-# Salvar os dados no arquivo Excel
-with pd.ExcelWriter(caminho_arquivo_excel, mode='a' if arquivo_existe else 'w', engine='openpyxl') as writer:
+# Escolher o modo do ExcelWriter com base na existência do arquivo
+modo = 'a' if arquivo_existe else 'w'
+
+# Definir a opção if_sheet_exists apenas para o modo de escrita "append"
+if_sheet_exists = 'overlay' if modo == 'a' else None
+
+with pd.ExcelWriter(caminho_arquivo_excel, mode=modo, engine='openpyxl', if_sheet_exists=if_sheet_exists) as writer:
     if arquivo_existe:
-        dados_existente = pd.read_excel(caminho_arquivo_excel)
-        # Verificar se já existe uma linha com o número do janelamento atual
-        linha_existente_index = dados_existente[dados_existente['Ocupacao'] == ocupacao].index
-        # Se a linha existir, sobrescrever com os novos valores
-        if not linha_existente_index.empty:
-            dados_existente.loc[linha_existente_index] = dados_df.values
-            dados_existente.to_excel(writer, index=False, header=True, sheet_name='Dados')
-            print(f"Dados atualizados para ocupacao {ocupacao}")
-        # Se a linha não existir, adicionar como uma nova linha no final do arquivo
+        # Verificar se o arquivo Excel está vazio
+        if os.path.getsize(caminho_arquivo_excel) == 0:
+            # Se o arquivo estiver vazio, inserir os dados diretamente
+            dados_df.to_excel(writer, index=False, header=True, sheet_name='Dados')
+            print("Dados salvos no arquivo Excel.")
         else:
-            dados_df.to_excel(writer, index=False, header=not arquivo_existe, sheet_name='Dados', startrow=len(dados_existente) + 1)
-            print(f"Dados adicionados para ocupacao {ocupacao}")
+            # Se o arquivo não estiver vazio, ler os dados existentes
+            dados_existente = pd.read_excel(caminho_arquivo_excel, sheet_name='Dados')
+            # Verificar se a ocupação já existe nos dados existentes
+            linha_existente_index = dados_existente[dados_existente['Ocupacao'] == ocupacao].index
+            if not linha_existente_index.empty:
+                # Se a ocupação já existe, substituir os valores na linha existente pelos novos dados
+                dados_existente.loc[linha_existente_index] = dados_df.values
+            else:
+                # Se a ocupação não existe, adicionar uma nova linha com os novos dados
+                novo_dados = pd.concat([dados_existente, dados_df], ignore_index=True)
+                dados_existente = novo_dados
+            # Sobrescrever o arquivo Excel com os novos dados
+            dados_existente.to_excel(writer, index=False, header=True, sheet_name='Dados')
+            print("Dados salvos no arquivo Excel.")
     else:
-        dados_df.to_excel(writer, index=False, header=not arquivo_existe, sheet_name='Dados')
+        # Se o arquivo não existir, salve os dados diretamente
+        dados_df.to_excel(writer, index=False, header=True, sheet_name='Dados')
         print("Dados salvos no arquivo Excel.")
