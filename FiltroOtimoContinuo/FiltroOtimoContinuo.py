@@ -212,6 +212,9 @@ dados_kfold = np.array([[int(n_janelamento), float(mediaErroEstimacaoKFold), flo
 caminho_arquivo_saida_kfold = "C:/Users/diogo/Desktop/Diogo(Estudos)/Mestrado/TEMC-Processamento-Avan-ado-de-Dados-para-Calorimetria-de-Altas-Energias1/FiltroOtimoContinuo/DispersaoKFold/DadosKfold_O"+str(ocupacao)+".txt"
 
 # notebook
+# caminho_arquivo_saida_kfold = "C:/Users/diogo/OneDrive/Área de Trabalho/TEMC-Processamento-Avan-ado-de-Dados-para-Calorimetria-de-Altas-Energias11/FiltroOtimoContinuo/DispersaoKFold/DadosKfold_O"+str(ocupacao)+".txt"
+
+# notebook
 # nome_arquivo_saida = "C:/Users/diogo/OneDrive/Área de Trabalho/TEMC-Processamento-Avan-ado-de-Dados-para-Calorimetria-de-Altas-Energias11/FiltroOtimoContinuo/valores_g_derivada.txt"
 titulos= ["Janelamento", "media", "desvioPadrao"]
 # Verificar se o arquivo existe, e se não, criar
