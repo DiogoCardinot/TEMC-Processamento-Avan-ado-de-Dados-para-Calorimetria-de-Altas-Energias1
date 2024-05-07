@@ -8,6 +8,7 @@ import os
 ocupacao = 20
 n_janelamento = 7
 
+############################################## PLOTS DOS PESOS, COV E DISPERSAO SIMPLES #############################################
 # Caminho do arquivo Excel
 caminho_arquivo_excel = "C:/Users/diogo/Desktop/Diogo(Estudos)/Mestrado/TEMC-Processamento-Avan-ado-de-Dados-para-Calorimetria-de-Altas-Energias1/FiltroOtimoContinuo/ErroEstimacao/ErroEstimacao_J"+str(n_janelamento)+".xlsx"
 
@@ -40,7 +41,6 @@ dados_ocupacao_desejada = dados_excel.loc[dados_excel['Ocupacao'] == ocupacao]
 # Converter os tipos de dados conforme necessário
 dados_excel['Ocupacao'] = dados_excel['Ocupacao'].astype(int)
 dados_excel['Pesos'] = dados_excel['Pesos'].apply(eval)  # Convertendo para lista
-dados_excel['Erro_Estimacao_Amplitude'] = dados_excel['Erro_Estimacao_Amplitude'].apply(string_para_lista)  # Convertendo para lista
 dados_excel['Media_Erro_Estimacao'] = dados_excel['Media_Erro_Estimacao'].astype(float)
 dados_excel['Desvio_Padrao_Erro_Estimacao'] = dados_excel['Desvio_Padrao_Erro_Estimacao'].astype(float)
 dados_excel['Matriz_Covariancia'] = dados_excel['Matriz_Covariancia'].apply(string_para_matriz)  # Convertendo para matriz
@@ -122,3 +122,49 @@ ocupacoes_desejadas = [0,10,20, 30,40,50,60,70,80,90,100] #lista de ocupacoes pa
 # PlotDispersao(ocupacoes_desejadas)
 # PlotMatrizCov(ocupacoes_desejadas)
 # PlotPesos(ocupacoes_desejadas)
+
+###################################################################### PLOTS PARA MEDIA DA MEDIA #####################################################
+
+############################################### CARREGAR INFORMAÇÕES PARA MEDIA DA MEDIA ##################################################
+caminho_arquivo_dados = "C:/Users/diogo/Desktop/Diogo(Estudos)/Mestrado/TEMC-Processamento-Avan-ado-de-Dados-para-Calorimetria-de-Altas-Energias1/FiltroOtimoContinuo/Dados/MediaDaMedia.txt"
+
+# Função para ler os dados do arquivo txt
+def ler_dados(caminho_arquivo):
+    dados = {}
+    with open(caminho_arquivo, 'r') as arquivo:
+        next(arquivo)  # Pula a primeira linha
+        for linha in arquivo:
+            partes = linha.split()
+            janelamento = int(partes[0])
+            ocupacao = int(partes[1])
+            # Remover a vírgula se houver e então converter para float
+            media_da_media = float(partes[4].replace(',', ''))
+            desvio_padrao_do_desvio_padrao = float(partes[5].replace(',', ''))
+            if ocupacao not in dados:
+                dados[ocupacao] = {'janelamentos': [], 'medias': [], 'desvios': []}
+            dados[ocupacao]['janelamentos'].append(janelamento)
+            dados[ocupacao]['medias'].append(media_da_media)
+            # Aplicar o módulo ao desvio padrão do desvio padrão
+            desvio_padrao_do_desvio_padrao = abs(desvio_padrao_do_desvio_padrao)
+            dados[ocupacao]['desvios'].append(desvio_padrao_do_desvio_padrao)
+    return dados
+
+# Função para plotar os gráficos
+def plotar_graficos(dados):
+    for ocupacao, info in dados.items():
+        janelamentos = info['janelamentos']
+        medias = info['medias']
+        desvios = info['desvios']
+        plt.errorbar(janelamentos, medias, yerr=desvios, fmt='-o', label=f'Ocupação {ocupacao}')
+    plt.xlabel('Janelamento')
+    plt.ylabel('Média da média do erro de estimação (ADC Count)')
+    plt.legend(loc=0)
+    plt.grid(True)
+    plt.show()
+
+
+# Ler os dados do arquivo
+dados = ler_dados(caminho_arquivo_dados)
+
+# Plotar os gráficos
+plotar_graficos(dados)

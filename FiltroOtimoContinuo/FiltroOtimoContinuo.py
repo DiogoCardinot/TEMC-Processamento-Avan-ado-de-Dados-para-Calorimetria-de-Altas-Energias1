@@ -7,9 +7,9 @@ from sklearn.model_selection import KFold
 from sklearn.metrics import mean_squared_error
 
 # Número do janelamento desejado
-n_janelamento = 9
+n_janelamento = 11
 pedestal = 30
-ocupacao = 100
+ocupacao = 0
 
 ############################################### CARREGAR INFORMAÇÕES DO PULSO DE REFERÊNCIA E DERIVADA ##################################################
 nome_arquivo_saida = "C:/Users/diogo/Desktop/Diogo(Estudos)/Mestrado/TEMC-Processamento-Avan-ado-de-Dados-para-Calorimetria-de-Altas-Energias1/FiltroOtimoContinuo/valores_g_derivada.txt"
@@ -175,17 +175,19 @@ k = 10
 amplitude_estimada_total = []
 mediaCadaFold=  [] #vetor que armazena a média dos dados de teste para cada fold
 desvioPadraoCadaFold = [] #vetor que armazena o desvio padrao dos dados de teste para cada fold
-
+erroCadaFold = []
 kf = KFold(n_splits=k)
 for train_index, test_index in kf.split(amplitude_Estimada):
     amplitude_Estimada = np.array(amplitude_Estimada)
     X_train, X_test = amplitude_Estimada[train_index], amplitude_Estimada[test_index]
-    mediaCadaFold.append(np.mean(X_test))
-    desvioPadraoCadaFold.append(np.std(X_test))
+    erroCadaFold.append(amplitude_Real[test_index] - amplitude_Estimada[test_index])
+    mediaCadaFold.append(np.mean(amplitude_Real[test_index] - amplitude_Estimada[test_index]))
+    desvioPadraoCadaFold.append(np.std(amplitude_Real[test_index] - amplitude_Estimada[test_index]))
     # print("Treinamento: ", amplitude_Estimada[test_index])
     amplitude_estimada_total.extend(X_test)   #adiciona a nova lista ao final
     # print("AmplitudeEstimadaKFold", amplitude_estimada_total)
 
+# print("erro cada fold:", erroCadaFold)
 # print("Media da media:", mediaCadaFold)
 # print("Dp DP", desvioPadraoCadaFold)
 # print("Tamanho da amplitude estimada kfold", len(amplitude_estimada_total))
