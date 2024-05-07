@@ -7,7 +7,7 @@ from sklearn.model_selection import KFold
 from sklearn.metrics import mean_squared_error
 
 # Número do janelamento desejado
-n_janelamento = 7
+n_janelamento = 9
 pedestal = 30
 ocupacao = 100
 
@@ -79,13 +79,8 @@ print("Amplitudes real do sinal:\n" , amplitude_Real)
 
 
 ########################################################### COMECAR O PROCESSO DO FILTRO ÓTIMO DE FATO #####################################################################
-caminho_arquivo_ruido= np.loadtxt('C:/Users/diogo/Desktop/Diogo(Estudos)/Mestrado/TEMC-Processamento-Avan-ado-de-Dados-para-Calorimetria-de-Altas-Energias1/FiltroOtimo/Dados Estimação/RuidoOcupacao_'+str(ocupacao)+'.txt')
-
-# notebook
-# caminho_arquivo_ruido = np.loadtxt('C:\Users\diogo\OneDrive\Área de Trabalho\TEMC-Processamento-Avan-ado-de-Dados-para-Calorimetria-de-Altas-Energias11/FiltroOtimo/Dados Estimação/RuidoOcupacao_'+str(ocupacao)+'.txt')
-
 # Calcular a matriz de covariância do ruido
-cov_matrix_ruido = np.cov(caminho_arquivo_ruido, rowvar=False)
+cov_matrix_ruido = np.cov(matriz_Ocupacao_Amostras, rowvar=False)
 
 # print("Matriz Covariancia do Ruido\n", cov_matrix_ruido)
 
@@ -178,17 +173,25 @@ k = 10
 
 # Inicialize uma lista para armazenar as amplitudes estimadas por fold
 amplitude_estimada_total = []
+mediaCadaFold=  [] #vetor que armazena a média dos dados de teste para cada fold
+desvioPadraoCadaFold = [] #vetor que armazena o desvio padrao dos dados de teste para cada fold
 
-# Instancie o objeto KFold e itere sobre os folds
 kf = KFold(n_splits=k)
 for train_index, test_index in kf.split(amplitude_Estimada):
     amplitude_Estimada = np.array(amplitude_Estimada)
     X_train, X_test = amplitude_Estimada[train_index], amplitude_Estimada[test_index]
-    
+    mediaCadaFold.append(np.mean(X_test))
+    desvioPadraoCadaFold.append(np.std(X_test))
+    # print("Treinamento: ", amplitude_Estimada[test_index])
     amplitude_estimada_total.extend(X_test)   #adiciona a nova lista ao final
     # print("AmplitudeEstimadaKFold", amplitude_estimada_total)
 
+# print("Media da media:", mediaCadaFold)
+# print("Dp DP", desvioPadraoCadaFold)
 # print("Tamanho da amplitude estimada kfold", len(amplitude_estimada_total))
+
+mediaDaMedia = np.mean(mediaCadaFold) #media da media para cada fold
+desvioPadraoDoDesvioPadrao = np.std(desvioPadraoCadaFold) #desvio padrao do desvio padrao de cada fold
 
 erroEstimacaoAmplitudeKFold = []
 for i in range(len(amplitude_estimada_total)):
@@ -204,6 +207,55 @@ desvioPadraoErroEstimacaoKFold = np.std(erroEstimacaoAmplitudeKFold)
 # plt.title(f'Histograma do Erro de Estimação de Amplitude para Ocupação {ocupacao}')
 # plt.legend()
 # plt.show()
+
+
+####################################### SALVAR A MEDIA DA MEDIA E O DESVIO PADRAO DO DESVIO PADRAO
+
+# Caminho do arquivo de saída
+caminho_arquivo_mediaDaMedia = "C:/Users/diogo/Desktop/Diogo(Estudos)/Mestrado/TEMC-Processamento-Avan-ado-de-Dados-para-Calorimetria-de-Altas-Energias1/FiltroOtimoContinuo/Dados/MediaDaMedia.txt"
+
+# notebook
+# nome_arquivo_saida = "C:/Users/diogo/OneDrive/Área de Trabalho/TEMC-Processamento-Avan-ado-de-Dados-para-Calorimetria-de-Altas-Energias11/FiltroOtimoContinuo/Dados/MediaDaMedia.txt"
+titulos= ["Janelamento", "Ocupacao", "mediaCadaFold", "desvioPadraoCadaFold", "MediaDaMedia", "DesvioPadraoDoDesvioPadrao"]
+# Verificar se o arquivo existe, e se não, criar
+if not os.path.exists(caminho_arquivo_mediaDaMedia):
+    with open(caminho_arquivo_mediaDaMedia, 'w') as arquivo:
+        arquivo.write(' '.join(titulos) + '\n')
+
+# Verificar se já existe uma linha com o número do janelamento
+with open(caminho_arquivo_mediaDaMedia, 'r') as arquivo_leitura:
+    linhas = arquivo_leitura.readlines()
+
+linha_existente = None
+for indice, linha in enumerate(linhas):
+    if linha.startswith(str(n_janelamento) + ' ' + str(ocupacao) +  ' '):
+        linha_existente = indice
+        break
+
+# Se a linha existir, sobrescrever com os novos valores
+if linha_existente is not None:
+    linhas[linha_existente] = f"{n_janelamento} {ocupacao} {mediaCadaFold} {desvioPadraoCadaFold} {mediaDaMedia} {desvioPadraoDoDesvioPadrao}\n"
+    # Reescrever todo o arquivo com as alterações
+    with open(caminho_arquivo_mediaDaMedia, 'w') as arquivo_escrita:
+        arquivo_escrita.writelines(linhas)
+    print(f"Dados atualizados para janelamento {n_janelamento} e ocupacao {ocupacao}")
+else:
+    # Se a linha não existir, adicionar como uma nova linha no final do arquivo
+    with open(caminho_arquivo_mediaDaMedia, 'a') as arquivo:
+        arquivo.write(f"{n_janelamento} {ocupacao} {mediaCadaFold} {desvioPadraoCadaFold} {mediaDaMedia} {desvioPadraoDoDesvioPadrao}\n")
+    print(f"Dados adicionados para janelamento {n_janelamento} e ocupacao {ocupacao}")
+
+
+
+
+
+
+
+
+
+
+
+
 
 # Organiza os dados em uma matriz
 dados_kfold = np.array([[int(n_janelamento), float(mediaErroEstimacaoKFold), float(desvioPadraoErroEstimacaoKFold)]])
