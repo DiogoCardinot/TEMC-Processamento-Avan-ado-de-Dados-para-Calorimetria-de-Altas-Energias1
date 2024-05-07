@@ -12,6 +12,8 @@ n_janelamento = 7
 # Caminho do arquivo Excel
 caminho_arquivo_excel = "C:/Users/diogo/Desktop/Diogo(Estudos)/Mestrado/TEMC-Processamento-Avan-ado-de-Dados-para-Calorimetria-de-Altas-Energias1/FiltroOtimoContinuo/ErroEstimacao/ErroEstimacao_J"+str(n_janelamento)+".xlsx"
 
+# notebook
+# caminho_arquivo_excel= "C:\Users\diogo\OneDrive\Área de Trabalho\TEMC-Processamento-Avan-ado-de-Dados-para-Calorimetria-de-Altas-Energias1\FiltroOtimoContinuo/ErroEstimacao/ErroEstimacao_J"+str(n_janelamento)+".xlsx"
 # Função para converter uma string em uma matriz NumPy
 def string_para_matriz(string):
     # Remover colchetes extras e quebras de linha
@@ -127,6 +129,9 @@ ocupacoes_desejadas = [0,10,20, 30,40,50,60,70,80,90,100] #lista de ocupacoes pa
 
 ############################################### CARREGAR INFORMAÇÕES PARA MEDIA DA MEDIA ##################################################
 caminho_arquivo_dados = "C:/Users/diogo/Desktop/Diogo(Estudos)/Mestrado/TEMC-Processamento-Avan-ado-de-Dados-para-Calorimetria-de-Altas-Energias1/FiltroOtimoContinuo/Dados/MediaDaMedia.txt"
+
+# notebook
+# caminho_arquivo_dados= "C:/Users/diogo/OneDrive/Área de Trabalho/TEMC-Processamento-Avan-ado-de-Dados-para-Calorimetria-de-Altas-Energias1/FiltroOtimoContinuo/Dados/MediaDaMedia.txt"
 
 # Função para ler os dados do arquivo txt
 def ler_dados(caminho_arquivo):
