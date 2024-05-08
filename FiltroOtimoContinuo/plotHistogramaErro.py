@@ -5,7 +5,7 @@ from sklearn.model_selection import KFold
 
 pedestal = 30
 n_janelamento = [7, 9, 11, 13, 15, 17, 19]
-ocupacao = [20, 30, 40, 50, 60, 70, 80, 90, 100]
+ocupacao = [0,10,20, 30, 40, 50, 60, 70, 80, 90, 100]
 
 def estimarAmplitude(matriz_amostras, pedestal, pesos):
     amplitude_estimada = []
