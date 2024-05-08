@@ -133,8 +133,8 @@ caminho_arquivo_dados = "C:/Users/diogo/Desktop/Diogo(Estudos)/Mestrado/TEMC-Pro
 # notebook
 # caminho_arquivo_dados= "C:/Users/diogo/OneDrive/Área de Trabalho/TEMC-Processamento-Avan-ado-de-Dados-para-Calorimetria-de-Altas-Energias1/FiltroOtimoContinuo/Dados/MediaDaMedia.txt"
 
-# Função para ler os dados do arquivo txt
-def ler_dados(caminho_arquivo):
+# Função para ler os dados organizados por ocupação
+def ler_dados_por_ocupacao(caminho_arquivo):
     dados = {}
     with open(caminho_arquivo, 'r') as arquivo:
         next(arquivo)  # Pula a primeira linha
@@ -147,7 +147,7 @@ def ler_dados(caminho_arquivo):
             desvio_padrao_do_desvio_padrao = float(partes[3].replace(',', ''))
             media_do_desvio_padrao = float(partes[4].replace(',', ''))
             if ocupacao not in dados:
-                dados[ocupacao] = {'janelamentos': [], 'medias': [], 'desvios': [], 'MediaDesvioPadrao': []}
+                dados[ocupacao] = {'janelamentos': [],'medias': [], 'desvios': [], 'MediaDesvioPadrao': []}
             dados[ocupacao]['janelamentos'].append(janelamento)
             dados[ocupacao]['medias'].append(media_da_media)
             # Aplicar o módulo ao desvio padrão do desvio padrão
@@ -156,7 +156,28 @@ def ler_dados(caminho_arquivo):
             dados[ocupacao]['MediaDesvioPadrao'].append(media_do_desvio_padrao)
     return dados
 
-# Função para plotar os gráficos
+# Função para ler os dados organizados por janelamento
+def ler_dados_por_janelamento(caminho_arquivo):
+    dados = {}
+    with open(caminho_arquivo, 'r') as arquivo:
+        next(arquivo)  # Pula a primeira linha
+        for linha in arquivo:
+            partes = linha.split()
+            janelamento = int(partes[0])
+            ocupacao = int(partes[1])
+            desvio_padrao_do_desvio_padrao = float(partes[3].replace(',', ''))
+            media_do_desvio_padrao = float(partes[4].replace(',', ''))
+            if janelamento not in dados:
+                dados[janelamento] = {'ocupacoes': [], 'medias': [], 'desvios': []}
+            dados[janelamento]['ocupacoes'].append(ocupacao)
+            dados[janelamento]['medias'].append(media_do_desvio_padrao)
+            # Aplicar o módulo ao desvio padrão do desvio padrão
+            desvio_padrao_do_desvio_padrao = abs(desvio_padrao_do_desvio_padrao)
+            dados[janelamento]['desvios'].append(desvio_padrao_do_desvio_padrao)
+    return dados
+
+
+# Função para plotar os gráficos organizados por ocupação
 def plotarMediaDaMedia(dados):
     for ocupacao, info in dados.items():
         janelamentos = info['janelamentos']
@@ -168,7 +189,6 @@ def plotarMediaDaMedia(dados):
     plt.legend(loc=0)
     plt.grid(True)
     plt.show()
-
 
 # Função para plotar os gráficos
 def plotarMediaDesvioPadrao(dados):
@@ -184,9 +204,29 @@ def plotarMediaDesvioPadrao(dados):
     plt.show()
 
 
-# Ler os dados do arquivo
-dados = ler_dados(caminho_arquivo_dados)
+# Função para plotar os gráficos organizados por janelamento
+def plotDispersao(dados):
+    for janelamento, info in dados.items():
+        ocupacoes = info['ocupacoes']
+        medias = info['medias']
+        desvios = info['desvios']
+        plt.errorbar(ocupacoes, medias, yerr=desvios, fmt='-o', label=f'Janelamento {janelamento}')
+    plt.xlabel('Ocupação')
+    plt.ylabel('Média do desvio padrão do erro de estimação (ADC Count)')
+    plt.legend(loc=0)
+    plt.grid(True)
+    plt.show()
 
-# Plotar os gráficos
-plotarMediaDaMedia(dados)
-plotarMediaDesvioPadrao(dados)
+# Caminho para o arquivo de dados
+caminho_arquivo_dados = "C:/Users/diogo/Desktop/Diogo(Estudos)/Mestrado/TEMC-Processamento-Avan-ado-de-Dados-para-Calorimetria-de-Altas-Energias1/FiltroOtimoContinuo/Dados/MediaDaMedia.txt"
+
+
+dadosParaCadaOcupacao = ler_dados_por_ocupacao(caminho_arquivo_dados)
+#media da media de cada ocupação para todos os janelamentos
+plotarMediaDaMedia(dadosParaCadaOcupacao)
+#media do desvio padrão de cada ocupação para todos os janelamentos
+plotarMediaDesvioPadrao(dadosParaCadaOcupacao)
+
+#Dispersao por ocupação para todos os janelamentos
+dadosParaCadaJanelamento = ler_dados_por_janelamento(caminho_arquivo_dados)
+plotDispersao(dadosParaCadaJanelamento)

@@ -8,8 +8,6 @@ from sklearn.model_selection import KFold
 pedestal = 30
 n_janelamento = [7,9,11,13,15,17,19]
 ocupacao = [0,10,20,30,40,50,60,70,80,90,100]
-############################################### CARREGAR INFORMAÇÕES DO PULSO DE REFERÊNCIA E DERIVADA ##################################################
-nome_arquivo_saida = "C:/Users/diogo/Desktop/Diogo(Estudos)/Mestrado/TEMC-Processamento-Avan-ado-de-Dados-para-Calorimetria-de-Altas-Energias1/FiltroOtimoContinuo/valores_g_derivada.txt"
 
 for d in range(len(n_janelamento)):
     for f in range(len(ocupacao)):
@@ -50,7 +48,7 @@ for d in range(len(n_janelamento)):
         nome_arquivo_amostras = "C:/Users/diogo/Desktop/Diogo(Estudos)/Mestrado/TEMC-Processamento-Avan-ado-de-Dados-para-Calorimetria-de-Altas-Energias1/FiltroOtimoContinuo/Dados_Ocupacoes/OC_"+str(ocupacao[f])+".txt"
 
         # notebook
-        # nome_arquivo_amostras = "C:/Users/diogo/OneDrive/Área de Trabalho/TEMC-Processamento-Avan-ado-de-Dados-para-Calorimetria-de-Altas-Energias11/FiltroOtimoContinuo/Dados_Ocupacoes/OC_"+str(ocupacao)+".txt"
+        # nome_arquivo_amostras = "C:/Users/diogo/OneDrive/Área de Trabalho/TEMC-Processamento-Avan-ado-de-Dados-para-Calorimetria-de-Altas-Energias11/FiltroOtimoContinuo/Dados_Ocupacoes/OC_"+str(ocupacao[f])+".txt"
 
         def montarMatrizSinaisEAmplitude(nome_arquivo_amostras, n_janelamento):
             dados_amostras = np.genfromtxt(nome_arquivo_amostras, delimiter=",", skip_header=1)
