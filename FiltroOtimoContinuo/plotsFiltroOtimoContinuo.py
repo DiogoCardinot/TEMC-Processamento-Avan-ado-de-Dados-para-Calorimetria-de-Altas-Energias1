@@ -212,7 +212,7 @@ def plotDispersao(dados):
         desvios = info['desvios']
         plt.errorbar(ocupacoes, medias, yerr=desvios, fmt='-o', label=f'Janelamento {janelamento}')
     plt.xlabel('Ocupação')
-    plt.ylabel('Média do desvio padrão do erro de estimação (ADC Count)')
+    plt.ylabel('Dispersão')
     plt.legend(loc=0)
     plt.grid(True)
     plt.show()
