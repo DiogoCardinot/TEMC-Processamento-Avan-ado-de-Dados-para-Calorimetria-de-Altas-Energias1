@@ -143,19 +143,21 @@ def ler_dados(caminho_arquivo):
             janelamento = int(partes[0])
             ocupacao = int(partes[1])
             # Remover a vírgula se houver e então converter para float
-            media_da_media = float(partes[4].replace(',', ''))
-            desvio_padrao_do_desvio_padrao = float(partes[5].replace(',', ''))
+            media_da_media = float(partes[2].replace(',', ''))
+            desvio_padrao_do_desvio_padrao = float(partes[3].replace(',', ''))
+            media_do_desvio_padrao = float(partes[4].replace(',', ''))
             if ocupacao not in dados:
-                dados[ocupacao] = {'janelamentos': [], 'medias': [], 'desvios': []}
+                dados[ocupacao] = {'janelamentos': [], 'medias': [], 'desvios': [], 'MediaDesvioPadrao': []}
             dados[ocupacao]['janelamentos'].append(janelamento)
             dados[ocupacao]['medias'].append(media_da_media)
             # Aplicar o módulo ao desvio padrão do desvio padrão
             desvio_padrao_do_desvio_padrao = abs(desvio_padrao_do_desvio_padrao)
             dados[ocupacao]['desvios'].append(desvio_padrao_do_desvio_padrao)
+            dados[ocupacao]['MediaDesvioPadrao'].append(media_do_desvio_padrao)
     return dados
 
 # Função para plotar os gráficos
-def plotar_graficos(dados):
+def plotarMediaDaMedia(dados):
     for ocupacao, info in dados.items():
         janelamentos = info['janelamentos']
         medias = info['medias']
@@ -168,8 +170,23 @@ def plotar_graficos(dados):
     plt.show()
 
 
+# Função para plotar os gráficos
+def plotarMediaDesvioPadrao(dados):
+    for ocupacao, info in dados.items():
+        janelamentos = info['janelamentos']
+        mediaDesvioPadrao = info['MediaDesvioPadrao']
+        desvios = info['desvios']
+        plt.errorbar(janelamentos, mediaDesvioPadrao, yerr=desvios, fmt='-o', label=f'Ocupação {ocupacao}')
+    plt.xlabel('Janelamento')
+    plt.ylabel('Média do desvio padrão do erro de estimação (ADC Count)')
+    plt.legend(loc=0)
+    plt.grid(True)
+    plt.show()
+
+
 # Ler os dados do arquivo
 dados = ler_dados(caminho_arquivo_dados)
 
 # Plotar os gráficos
-plotar_graficos(dados)
+plotarMediaDaMedia(dados)
+plotarMediaDesvioPadrao(dados)
