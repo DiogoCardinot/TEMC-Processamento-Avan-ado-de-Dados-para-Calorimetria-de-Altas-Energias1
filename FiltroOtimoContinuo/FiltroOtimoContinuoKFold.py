@@ -170,7 +170,7 @@ k = 100
 kf = KFold(n_splits=k)
 mediaKfold = []
 desvioPadraoKfold =[]
-for fold, (train_index, test_index) in enumerate(kf.split(amplitude_estimada)):
+for fold, (train_index, test_index) in enumerate(kf.split(matriz_amostras)):
     matrizAmostrasTreino, matrizAmostrasTeste = matriz_amostras[train_index,:], matriz_amostras[test_index,:]
     amplitudeAmostrasTreino, amplitudeAmostrasTestes = amplitude_real[train_index], amplitude_real[test_index]
     covMatrizRuido = montarMatrizCovarianciaRuido(matrizAmostrasTreino)
