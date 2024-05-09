@@ -45,10 +45,10 @@ for d in range(len(n_janelamento)):
 
         #################################### LER AS AMOSTRAS E AS AMPLITUDES ASSOCIADAS DE ACORDO COM O JANELAMENTO ###################################################################
 
-        nome_arquivo_amostras = "C:/Users/diogo/Desktop/Diogo(Estudos)/Mestrado/TEMC-Processamento-Avan-ado-de-Dados-para-Calorimetria-de-Altas-Energias1/FiltroOtimoContinuo/Dados_Ocupacoes/OC_"+str(ocupacao[f])+".txt"
+        # nome_arquivo_amostras = "C:/Users/diogo/Desktop/Diogo(Estudos)/Mestrado/TEMC-Processamento-Avan-ado-de-Dados-para-Calorimetria-de-Altas-Energias1/FiltroOtimoContinuo/Dados_Ocupacoes/OC_"+str(ocupacao[f])+".txt"
 
         # notebook
-        # nome_arquivo_amostras = "C:/Users/diogo/OneDrive/Área de Trabalho/TEMC-Processamento-Avan-ado-de-Dados-para-Calorimetria-de-Altas-Energias11/FiltroOtimoContinuo/Dados_Ocupacoes/OC_"+str(ocupacao[f])+".txt"
+        nome_arquivo_amostras = "C:/Users/diogo/OneDrive/Área de Trabalho/TEMC-Processamento-Avan-ado-de-Dados-para-Calorimetria-de-Altas-Energias11/FiltroOtimoContinuo/Dados_Ocupacoes/OC_"+str(ocupacao[f])+".txt"
 
         def montarMatrizSinaisEAmplitude(nome_arquivo_amostras, n_janelamento):
             dados_amostras = np.genfromtxt(nome_arquivo_amostras, delimiter=",", skip_header=1)
@@ -208,8 +208,11 @@ for d in range(len(n_janelamento)):
 
         ################## SALVAR OS DADOS PARA O ARQUIVO REFERENTE AO KFOLD PARA MEDIA DA MEDIA E DESVIO PADRAO DO DESVIO PADRAO ##################
         # Caminho do arquivo de saída
-        caminho_arquivo_mediaDaMedia = "C:/Users/diogo/Desktop/Diogo(Estudos)/Mestrado/TEMC-Processamento-Avan-ado-de-Dados-para-Calorimetria-de-Altas-Energias1/FiltroOtimoContinuo/Dados/MediaDaMedia.txt"
+        # caminho_arquivo_mediaDaMedia = "C:/Users/diogo/Desktop/Diogo(Estudos)/Mestrado/TEMC-Processamento-Avan-ado-de-Dados-para-Calorimetria-de-Altas-Energias1/FiltroOtimoContinuo/Dados/MediaDaMedia.txt"
 
+
+        # notebook
+        caminho_arquivo_mediaDaMedia= "C:/Users/diogo/OneDrive/Área de Trabalho/TEMC-Processamento-Avan-ado-de-Dados-para-Calorimetria-de-Altas-Energias1/FiltroOtimoContinuo/Dados/MediaDaMedia.txt"
         def atualizar_arquivo_media(caminho_arquivo_mediaDaMedia,n_janelamento, ocupacao, mediaDaMedia,desvioPadraoDoDesvioPadrao, mediaDesvioPadraoKFold):
             titulos = ["Janelamento", "Ocupacao", "MediaDaMedia", "DesvioPadraoDoDesvioPadrao", "MediaDesvioPadrao"]
 

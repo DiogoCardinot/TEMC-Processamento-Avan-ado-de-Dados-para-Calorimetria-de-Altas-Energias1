@@ -6,14 +6,14 @@ from sklearn.model_selection import KFold
 
 # Número do janelamento desejado
 n_janelamento = 7
-pedestal = 30
-ocupacao = 0
+pedestal = 0
+ocupacao = 50
 
 ############################################### CARREGAR INFORMAÇÕES DO PULSO DE REFERÊNCIA E SUA DERIVADA ##################################################
-nome_arquivo_saida = "C:/Users/diogo/Desktop/Diogo(Estudos)/Mestrado/TEMC-Processamento-Avan-ado-de-Dados-para-Calorimetria-de-Altas-Energias1/FiltroOtimoContinuo/valores_g_derivada.txt"
+# nome_arquivo_saida = "C:/Users/diogo/Desktop/Diogo(Estudos)/Mestrado/TEMC-Processamento-Avan-ado-de-Dados-para-Calorimetria-de-Altas-Energias1/FiltroOtimoContinuo/valores_g_derivada.txt"
 
 # notebook
-# nome_arquivo_saida = "C:/Users/diogo/OneDrive/Área de Trabalho/TEMC-Processamento-Avan-ado-de-Dados-para-Calorimetria-de-Altas-Energias11/FiltroOtimoContinuo/valores_g_derivada.txt"
+nome_arquivo_saida = "C:/Users/diogo/OneDrive/Área de Trabalho/TEMC-Processamento-Avan-ado-de-Dados-para-Calorimetria-de-Altas-Energias1/FiltroOtimoContinuo/valores_g_derivada.txt"
 # Inicializar variáveis para armazenar os dados de g e sua derivada
 g = None
 derivada_g = None
@@ -43,10 +43,10 @@ else:
 
 #################################### LER AS AMOSTRAS E AS AMPLITUDES ASSOCIADAS DE ACORDO COM O JANELAMENTO ###################################################################
 
-nome_arquivo_amostras = "C:/Users/diogo/Desktop/Diogo(Estudos)/Mestrado/TEMC-Processamento-Avan-ado-de-Dados-para-Calorimetria-de-Altas-Energias1/FiltroOtimoContinuo/Dados_Ocupacoes/OC_"+str(ocupacao)+".txt"
+# nome_arquivo_amostras = "C:/Users/diogo/Desktop/Diogo(Estudos)/Mestrado/TEMC-Processamento-Avan-ado-de-Dados-para-Calorimetria-de-Altas-Energias1/FiltroOtimoContinuo/Dados_Ocupacoes/OC_"+str(ocupacao)+".txt"
 
 # notebook
-# nome_arquivo_amostras = "C:/Users/diogo/OneDrive/Área de Trabalho/TEMC-Processamento-Avan-ado-de-Dados-para-Calorimetria-de-Altas-Energias11/FiltroOtimoContinuo/Dados_Ocupacoes/OC_"+str(ocupacao)+".txt"
+nome_arquivo_amostras = "C:/Users/diogo/OneDrive/Área de Trabalho/TEMC-Processamento-Avan-ado-de-Dados-para-Calorimetria-de-Altas-Energias1/FiltroOtimoContinuo/Dados_Ocupacoes/OC_"+str(ocupacao)+".txt"
 
 def montarMatrizSinaisEAmplitude(nome_arquivo_amostras, n_janelamento):
     dados_amostras = np.genfromtxt(nome_arquivo_amostras, delimiter=",", skip_header=1)
@@ -77,6 +77,57 @@ def montarMatrizSinaisEAmplitude(nome_arquivo_amostras, n_janelamento):
 
 matriz_amostras, amplitude_real = montarMatrizSinaisEAmplitude(nome_arquivo_amostras, n_janelamento)
 
+np.savetxt("C:/Users/diogo/OneDrive/Área de Trabalho/TEMC-Processamento-Avan-ado-de-Dados-para-Calorimetria-de-Altas-Energias1/FiltroOtimoContinuo/sinaisJanelados.txt", matriz_amostras, fmt= "%.4f")
+np.savetxt( "C:/Users/diogo/OneDrive/Área de Trabalho/TEMC-Processamento-Avan-ado-de-Dados-para-Calorimetria-de-Altas-Energias1/FiltroOtimoContinuo/amplitudesJaneladas.txt", amplitude_real , fmt= "%.4f")
+
+print("Matriz Amostras: \n", matriz_amostras)
+print("Amplitude real: \n", amplitude_real)
+
+# primeiracoluna = matriz_amostras[:,0]
+# segundacoluna = matriz_amostras[:,1]
+# terceiracoluna = matriz_amostras[:,2]
+# quartacoluna = matriz_amostras[:,3]
+# quintacoluna = matriz_amostras[:,4]
+# sextacoluna = matriz_amostras[:,5]
+# setimacoluna = matriz_amostras[:,6]
+# plt.hist(primeiracoluna, bins=50, alpha=0.7, histtype='step', label="janelamento="+str(n_janelamento)+" media="+str(np.mean(primeiracoluna)))
+# plt.legend(loc=0)
+# plt.title("Primeira Coluna")
+# plt.show()
+
+# plt.hist(segundacoluna, bins=50, alpha=0.7, histtype='step', label="janelamento="+str(n_janelamento)+" media="+str(np.mean(segundacoluna)))
+# plt.legend(loc=0)
+
+# plt.title("Segunda Coluna")
+# plt.show()
+
+# plt.hist(terceiracoluna, bins=50, alpha=0.7, histtype='step', label="janelamento="+str(n_janelamento)+" media="+str(np.mean(terceiracoluna)))
+# plt.title("Terceira Coluna")
+# plt.legend(loc=0)
+# plt.show()
+
+# plt.hist(quartacoluna, bins=50, alpha=0.7, histtype='step', label="janelamento="+str(n_janelamento)+" media="+str(np.mean(quartacoluna)))
+# plt.legend(loc=0)
+# plt.title("Quarta Coluna")
+# plt.show()
+
+# plt.hist(quintacoluna, bins=50, alpha=0.7, histtype='step', label="janelamento="+str(n_janelamento)+" media="+str(np.mean(quintacoluna)))
+# plt.legend(loc=0)
+# plt.title("Quinta Coluna")
+# plt.show()
+
+
+# plt.hist(sextacoluna, bins=50, alpha=0.7, histtype='step', label="janelamento="+str(n_janelamento)+" media="+str(np.mean(sextacoluna)))
+# plt.legend(loc=0)
+# plt.title("Sexta Coluna")
+# plt.show()
+
+
+# plt.hist(setimacoluna, bins=50, alpha=0.7, histtype='step', label="janelamento="+str(n_janelamento)+" media="+str(np.mean(setimacoluna)))
+# plt.legend(loc=0)
+# plt.title("Setima Coluna")
+# plt.show()
+
 
 def montarMatrizCovarianciaRuido(matriz_amostras):
     # Calcular a matriz de covariância do ruído
@@ -95,7 +146,7 @@ def montarMatrizCoeficientes(g, derivada_g, cov_matrix_ruido):
             A[i][j] = cov_matrix_ruido[i][j]
 
     for i in range(n_janelamento):
-        A[i][n_janelamento] = -g[i] 
+        A[i][n_janelamento] =-g[i] 
         A[i][n_janelamento+1] = -derivada_g[i]
         A[i][n_janelamento+2] = -1
         A[n_janelamento][i] = g[i]
@@ -187,16 +238,18 @@ for fold, (train_index, test_index) in enumerate(kf.split(matriz_amostras)):
     else:
         print(solucao_sistemaKFold)
     erroEstimacaoKFold = []
-    
+
     amplitude_estimadaTeste = estimarAmplitude(matrizAmostrasTeste, pedestal, w_kfold)
     for k in range(len(amplitude_estimadaTeste)):
         erroEstimacaoKFold.append(amplitude_estimadaTeste[k]- amplitudeAmostrasTestes[k])
-    
+
+    print("Fold:", fold)
+    print("Pesos:", w_kfold)
     # Plotagem do histograma
-    plt.hist(erroEstimacaoKFold, bins=50, alpha=0.7, histtype='step', label="Fold = "+str(fold))
 
     mediaKfold.append(np.mean(erroEstimacaoKFold))
     desvioPadraoKfold.append(np.std(erroEstimacaoKFold))
+    plt.hist(erroEstimacaoKFold, bins=50, alpha=0.7, histtype='step', label="Fold = "+str(fold)+"média="+str(mediaKfold[-1]))
 
 plt.xlabel('Erro de Estimação')
 plt.ylabel('Frequência')
@@ -216,7 +269,10 @@ mediaDesvioPadraoKFold = np.mean(desvioPadraoKfold)
 
 ################## SALVAR OS DADOS PARA O ARQUIVO REFERENTE AO KFOLD PARA MEDIA DA MEDIA E DESVIO PADRAO DO DESVIO PADRAO ##################
 # Caminho do arquivo de saída
-caminho_arquivo_mediaDaMedia = "C:/Users/diogo/Desktop/Diogo(Estudos)/Mestrado/TEMC-Processamento-Avan-ado-de-Dados-para-Calorimetria-de-Altas-Energias1/FiltroOtimoContinuo/Dados/MediaDaMedia.txt"
+# caminho_arquivo_mediaDaMedia = "C:/Users/diogo/Desktop/Diogo(Estudos)/Mestrado/TEMC-Processamento-Avan-ado-de-Dados-para-Calorimetria-de-Altas-Energias1/FiltroOtimoContinuo/Dados/MediaDaMedia.txt"
+
+# notebook
+caminho_arquivo_mediaDaMedia= "C:/Users/diogo/OneDrive/Área de Trabalho/TEMC-Processamento-Avan-ado-de-Dados-para-Calorimetria-de-Altas-Energias1/FiltroOtimoContinuo/Dados/MediaDaMedia.txt"
 
 def atualizar_arquivo_media(caminho_arquivo_mediaDaMedia,n_janelamento, ocupacao, mediaDaMedia,desvioPadraoDoDesvioPadrao, mediaDesvioPadraoKFold):
     titulos = ["Janelamento", "Ocupacao", "MediaDaMedia", "DesvioPadraoDoDesvioPadrao", "MediaDesvioPadrão"]
@@ -284,4 +340,5 @@ atualizar_arquivo_media(caminho_arquivo_mediaDaMedia, n_janelamento, ocupacao, m
 #         # Se a linha não existir, adicionar como uma nova linha no final do arquivo
 #         with open(caminho_arquivo_mediaDaMedia, 'a') as arquivo:
 #             arquivo.write(f"{n_janelamento} {ocupacao} {mediaCadaFold} {desvioPadraoCadaFold} {mediaDaMedia} {desvioPadraoDoDesvioPadrao}\n")
-#         print(f"Dados adicionados para janelamento {n_janelamento} e ocupacao {ocupacao}")
+#         print(f"Dados adicionados para janelamento {n_janelamento} e ocupacao {ocupacao}")]
+
