@@ -165,12 +165,14 @@ for f in range(len(ocupacao)):
             # Calcular erro de estimativa para o conjunto de teste e armazenar na lista
             for k in range(len(amplitude_estimadaTeste)):
                 erroEstimacaoKFold.append(amplitude_estimadaTeste[k] - amplitudeAmostrasTestes[k])
+            mediaKfold.append(np.mean(erroEstimacaoKFold))
+            desvioPadraoKfold.append(np.std(erroEstimacaoKFold))
 
         # Plotar o histograma apenas para o valor atual de janelamento
-        plt.hist(erroEstimacaoKFold, bins=50, alpha=0.7, histtype='step', label="Janelamento: " + str(n_janelamento[d]))
-        print("Janelamento:", n_janelamento[d])
-        print("Ocupacao:", ocupacao[f])
-        print("Erro estimacao: \n", erroEstimacaoKFold)
+        plt.hist(erroEstimacaoKFold, bins=50, alpha=0.7, histtype='step', label=f"Janelamento: {n_janelamento[d]} ($\mu$= {mediaKfold[-1]:.3f},$\sigma$={desvioPadraoKfold[-1]:.3f} )")
+        # print("Janelamento:", n_janelamento[d])
+        # print("Ocupacao:", ocupacao[f])
+        # print("Erro estimacao: \n", erroEstimacaoKFold)
 
     plt.xlabel("Erro Estimação")
     plt.ylabel("Frequência")
