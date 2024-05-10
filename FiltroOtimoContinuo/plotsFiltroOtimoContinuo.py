@@ -122,7 +122,7 @@ def PlotPesos(ocupacoes_desejadas):
 
 ocupacoes_desejadas = [0,10,20, 30,40,50,60,70,80,90,100] #lista de ocupacoes para teste
 # PlotDispersao(ocupacoes_desejadas)
-PlotMatrizCov(ocupacoes_desejadas)
+# PlotMatrizCov(ocupacoes_desejadas)
 # PlotPesos(ocupacoes_desejadas)
 
 ###################################################################### PLOTS PARA MEDIA DA MEDIA #####################################################
@@ -165,12 +165,14 @@ def ler_dados_por_janelamento(caminho_arquivo):
             partes = linha.split()
             janelamento = int(partes[0])
             ocupacao = int(partes[1])
+            media_media = float(partes[2].replace(',', ''))
             desvio_padrao_do_desvio_padrao = float(partes[3].replace(',', ''))
             media_do_desvio_padrao = float(partes[4].replace(',', ''))
             if janelamento not in dados:
-                dados[janelamento] = {'ocupacoes': [], 'medias': [], 'desvios': []}
+                dados[janelamento] = {'ocupacoes': [], 'mediaDaMedia': [],'mediaDesvioPadrao': [], 'desvios': []}
+            dados[janelamento]['mediaDaMedia'].append(media_media)
             dados[janelamento]['ocupacoes'].append(ocupacao)
-            dados[janelamento]['medias'].append(media_do_desvio_padrao)
+            dados[janelamento]['mediaDesvioPadrao'].append(media_do_desvio_padrao)
             # Aplicar o módulo ao desvio padrão do desvio padrão
             desvio_padrao_do_desvio_padrao = abs(desvio_padrao_do_desvio_padrao)
             dados[janelamento]['desvios'].append(desvio_padrao_do_desvio_padrao)
@@ -208,11 +210,29 @@ def plotarMediaDesvioPadrao(dados):
 def plotDispersao(dados):
     for janelamento, info in dados.items():
         ocupacoes = info['ocupacoes']
-        medias = info['medias']
+        medias = info['mediaDesvioPadrao']
         desvios = info['desvios']
         plt.errorbar(ocupacoes, medias, yerr=desvios, fmt='-o', label=f'Janelamento {janelamento}')
-    plt.xlabel('Ocupação')
-    plt.ylabel('Dispersão')
+    plt.xlabel('Ocupação', fontsize=18)
+    plt.ylabel('Dispersão', fontsize=18)
+    plt.xticks(range(0, 101, 10), fontsize=18)
+    plt.yticks(fontsize=18)  # Define o tamanho da fonte para os rótulos do eixo Y
+    plt.legend(loc=0)
+    plt.grid(True)
+    plt.show()
+
+
+def plotarMediaJanelamento(dados):
+    for janelamento, info in dados.items():
+        ocupacoes = info['ocupacoes']
+        medias = info['mediaDaMedia']
+        desvios = info['desvios']
+        if janelamento==19:
+            plt.errorbar(ocupacoes, medias, yerr=desvios, fmt='-o', label = "Janelamento: "+str(janelamento), color='purple')
+    plt.xlabel('Ocupação', fontsize=18)
+    plt.ylabel('Média do erro de estimação (ADC Count)', fontsize=18)
+    plt.xticks(range(0, 101, 10), fontsize=18)
+    plt.yticks(fontsize=18)  # Define o tamanho da fonte para os rótulos do eixo Y
     plt.legend(loc=0)
     plt.grid(True)
     plt.show()
@@ -232,3 +252,4 @@ plotarMediaDesvioPadrao(dadosParaCadaOcupacao)
 #Dispersao por ocupação para todos os janelamentos
 dadosParaCadaJanelamento = ler_dados_por_janelamento(caminho_arquivo_dados)
 plotDispersao(dadosParaCadaJanelamento)
+plotarMediaJanelamento(dadosParaCadaJanelamento)

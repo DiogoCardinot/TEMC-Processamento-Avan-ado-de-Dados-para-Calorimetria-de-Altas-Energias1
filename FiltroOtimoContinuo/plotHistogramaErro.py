@@ -4,15 +4,15 @@ import matplotlib.pyplot as plt
 from sklearn.model_selection import KFold
 
 pedestal = 30
-n_janelamento = [7, 9, 11, 13, 15, 17, 19]
-ocupacao = [0,10,20, 30, 40, 50, 60, 70, 80, 90, 100]
+n_janelamento = [ 19]
+ocupacao = [40]
 
-def estimarAmplitude(matriz_amostras, pedestal, pesos):
+def estimarAmplitude(matriz_amostras, pesos):
     amplitude_estimada = []
     for i in range(len(matriz_amostras)):  # para cada linha
         soma = 0
         for j in range(len(pesos)):  # para cada coluna
-            multiplicacao = (matriz_amostras[i][j] - pedestal) * pesos[j]
+            multiplicacao = (matriz_amostras[i][j]) * pesos[j]
             soma += multiplicacao
         amplitude_estimada.append(soma)
     return amplitude_estimada
@@ -72,7 +72,7 @@ for f in range(len(ocupacao)):
             for i in range(num_linhas):
                 inicio = i  # começa no ponto atual
                 fim = i + n_janelamento  # vai até o ponto atual + n_janelamento
-                matriz_amostras[i] = dados_amostras[inicio:fim, 1]  # salva a linha na matriz
+                matriz_amostras[i] = dados_amostras[inicio:fim, 1]-pedestal  # salva a linha na matriz
 
             # Calcular o índice do valor central em cada linha
             indice_central = n_janelamento // 2
@@ -159,7 +159,7 @@ for f in range(len(ocupacao)):
                 print(solucao_sistemaKFold)
 
             # Calcular amplitude estimada para o conjunto de teste
-            amplitude_estimadaTeste = estimarAmplitude(matrizAmostrasTeste, pedestal, w_kfold)
+            amplitude_estimadaTeste = estimarAmplitude(matrizAmostrasTeste, w_kfold)
 
             # Calcular erro de estimativa para o conjunto de teste e armazenar na lista
             for k in range(len(amplitude_estimadaTeste)):
@@ -168,15 +168,19 @@ for f in range(len(ocupacao)):
             desvioPadraoKfold.append(np.std(erroEstimacaoKFold))
 
         # Plotar o histograma apenas para o valor atual de janelamento
-        plt.hist(erroEstimacaoKFold, bins=50, alpha=0.7, histtype='step', label=f"Janelamento: {n_janelamento[d]} ($\mu$= {mediaKfold[-1]:.3f},$\sigma$={desvioPadraoKfold[-1]:.3f} )")
+        # plt.hist(erroEstimacaoKFold, bins=50, alpha=0.7, histtype='step', label=f"Janelamento: {n_janelamento[d]} ($\mu$= {mediaKfold[-1]:.3f},$\sigma$={desvioPadraoKfold[-1]:.3f} )")
+        plt.hist(erroEstimacaoKFold, bins=150, alpha=0.7, color='purple', edgecolor='black', label=f"Janelamento: {n_janelamento[d]} ($\mu$= {mediaKfold[-1]:.3f}, $\sigma$={desvioPadraoKfold[-1]:.3f})")
         # print("Janelamento:", n_janelamento[d])
         # print("Ocupacao:", ocupacao[f])
         # print("Erro estimacao: \n", erroEstimacaoKFold)
 
-    plt.xlabel("Erro Estimação")
-    plt.ylabel("Frequência")
-    plt.title("Ocupação: " + str(ocupacao[f]))
+    plt.xlabel("Erro de estimação",fontsize=18)
+    plt.xlim(-300, 200)
+    plt.ylabel("Frequência",fontsize=18)
+    plt.xticks(range(-300, 201, 50), fontsize=18)
+    plt.title("Histograma do erro de estimação para "+ str(ocupacao[f])+ "% de ocupação" , fontsize=20)
     plt.legend(loc=0)
+    plt.grid(True)
     plt.show()
 
     # Cálculo da média das médias e do desvio padrão dos desvios padrão para toda a ocupação

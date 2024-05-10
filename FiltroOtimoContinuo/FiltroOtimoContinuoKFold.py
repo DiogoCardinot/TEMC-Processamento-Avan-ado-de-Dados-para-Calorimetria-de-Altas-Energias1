@@ -6,7 +6,7 @@ from sklearn.model_selection import KFold
 
 # Número do janelamento desejado
 n_janelamento = 7
-pedestal = 0
+pedestal = 30
 ocupacao = 50
 
 ############################################### CARREGAR INFORMAÇÕES DO PULSO DE REFERÊNCIA E SUA DERIVADA ##################################################
@@ -61,7 +61,7 @@ def montarMatrizSinaisEAmplitude(nome_arquivo_amostras, n_janelamento):
     for i in range(num_linhas):
         inicio = i  # começa no ponto atual
         fim = i + n_janelamento  # vai até o ponto atual + n_janelamento
-        matriz_amostras[i] = dados_amostras[inicio:fim, 1]-30  # salva a linha na matriz
+        matriz_amostras[i] = dados_amostras[inicio:fim, 1] - pedestal  # salva a linha na matriz
 
     # Calcular o índice do valor central em cada linha
     indice_central = n_janelamento // 2
@@ -78,15 +78,15 @@ def montarMatrizSinaisEAmplitude(nome_arquivo_amostras, n_janelamento):
 matriz_amostras, amplitude_real = montarMatrizSinaisEAmplitude(nome_arquivo_amostras, n_janelamento)
 
 
-np.savetxt("C:/Users/diogo/Desktop/Diogo(Estudos)/Mestrado/TEMC-Processamento-Avan-ado-de-Dados-para-Calorimetria-de-Altas-Energias1/FiltroOtimoContinuo/SinaisJanelados/sinaisJaneladosSemPedestal.txt", matriz_amostras, fmt="%.4f")
-np.savetxt("C:/Users/diogo/Desktop/Diogo(Estudos)/Mestrado/TEMC-Processamento-Avan-ado-de-Dados-para-Calorimetria-de-Altas-Energias1/FiltroOtimoContinuo/SinaisJanelados/amplitudesJaneladas.txt", amplitude_real, fmt="%.4f")
+# np.savetxt("C:/Users/diogo/Desktop/Diogo(Estudos)/Mestrado/TEMC-Processamento-Avan-ado-de-Dados-para-Calorimetria-de-Altas-Energias1/FiltroOtimoContinuo/SinaisJanelados/sinaisJaneladosSemPedestal.txt", matriz_amostras, fmt="%.4f")
+# np.savetxt("C:/Users/diogo/Desktop/Diogo(Estudos)/Mestrado/TEMC-Processamento-Avan-ado-de-Dados-para-Calorimetria-de-Altas-Energias1/FiltroOtimoContinuo/SinaisJanelados/amplitudesJaneladas.txt", amplitude_real, fmt="%.4f")
 
 #notebook
 # np.savetxt("C:/Users/diogo/OneDrive/Área de Trabalho/TEMC-Processamento-Avan-ado-de-Dados-para-Calorimetria-de-Altas-Energias1/FiltroOtimoContinuo/sinaisJanelados.txt", matriz_amostras, fmt= "%.4f")
 # np.savetxt( "C:/Users/diogo/OneDrive/Área de Trabalho/TEMC-Processamento-Avan-ado-de-Dados-para-Calorimetria-de-Altas-Energias1/FiltroOtimoContinuo/amplitudesJaneladas.txt", amplitude_real , fmt= "%.4f")
 
-print("Matriz Amostras: \n", matriz_amostras)
-print("Amplitude real: \n", amplitude_real)
+# print("Matriz Amostras: \n", matriz_amostras)
+# print("Amplitude real: \n", amplitude_real)
 
 # primeiracoluna = matriz_amostras[:,0]
 # segundacoluna = matriz_amostras[:,1]
@@ -200,12 +200,12 @@ else:
 # print("Vetor de pesos:\n", w)
 # print("Soma vetor pesos: ", sum(w))
 
-def estimarAmplitude(matriz_amostras, pedestal, pesos):
+def estimarAmplitude(matriz_amostras, pesos):
     amplitude_estimada = []
     for i in range(len(matriz_amostras)):  # para cada linha
         soma = 0
         for j in range(len(pesos)):  # para cada coluna
-            multiplicacao = (matriz_amostras[i][j] - pedestal) * pesos[j]
+            multiplicacao = (matriz_amostras[i][j]) * pesos[j]
             soma += multiplicacao
         amplitude_estimada.append(soma)
     return amplitude_estimada
@@ -214,7 +214,7 @@ def estimarAmplitude(matriz_amostras, pedestal, pesos):
 # Supondo que você já tenha matriz_Ocupacao_Amostras, pedestal e w
 
 # Calcular amplitude estimada sem o k fold (tamanho total do conjunto de amostras da amplitude)
-amplitude_estimada = estimarAmplitude(matriz_amostras, pedestal, w)
+amplitude_estimada = estimarAmplitude(matriz_amostras, w)
 
 # print("Amplitude estimada: \n", amplitude_estimada)
 # print("Tamanho amplitude estimada:", len(amplitude_estimada))
@@ -244,7 +244,7 @@ for fold, (train_index, test_index) in enumerate(kf.split(matriz_amostras)):
         print(solucao_sistemaKFold)
     erroEstimacaoKFold = []
 
-    amplitude_estimadaTeste = estimarAmplitude(matrizAmostrasTeste, pedestal, w_kfold)
+    amplitude_estimadaTeste = estimarAmplitude(matrizAmostrasTeste, w_kfold)
     for k in range(len(amplitude_estimadaTeste)):
         erroEstimacaoKFold.append(amplitude_estimadaTeste[k]- amplitudeAmostrasTestes[k])
 
