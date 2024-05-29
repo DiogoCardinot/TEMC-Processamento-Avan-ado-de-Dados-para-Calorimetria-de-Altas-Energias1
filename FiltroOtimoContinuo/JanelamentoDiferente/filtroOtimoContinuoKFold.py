@@ -7,7 +7,7 @@ from sklearn.model_selection import KFold
 # Número do janelamento desejado
 n_janelamento = 7
 pedestal = 30
-ocupacao = 0
+ocupacao = 50
 
 ############################################### CARREGAR INFORMAÇÕES DO PULSO DE REFERÊNCIA E SUA DERIVADA ##################################################
 nome_arquivo_saida = "C:/Users/diogo/Desktop/Diogo(Estudos)/Mestrado/TEMC-Processamento-Avan-ado-de-Dados-para-Calorimetria-de-Altas-Energias1/FiltroOtimoContinuo/valores_g_derivada.txt"
@@ -51,32 +51,33 @@ nome_arquivo_amostras = "C:/Users/diogo/Desktop/Diogo(Estudos)/Mestrado/TEMC-Pro
 def montarMatrizSinaisEAmplitude(nome_arquivo_amostras, n_janelamento):
     dados_amostras = np.genfromtxt(nome_arquivo_amostras, delimiter=",", skip_header=1)
 
-    # Calcular o número de linhas para a matriz
-    num_linhas = len(dados_amostras) - (n_janelamento - 1)
+    # Calcular o número de blocos de janelamento completos no arquivo
+    num_blocos = len(dados_amostras) // n_janelamento
 
-    # Inicializar a matriz para armazenar os blocos de amostras, com num_linhas linhas e n_janelamento colunas
-    matriz_amostras = np.zeros((num_linhas, n_janelamento))
-
-    # Preencher a matriz com os blocos de amostras
-    for i in range(num_linhas):
-        inicio = i  # começa no ponto atual
-        fim = i + n_janelamento  # vai até o ponto atual + n_janelamento
-        matriz_amostras[i] = dados_amostras[inicio:fim, 1] - pedestal  # salva a linha na matriz
-
-    # Calcular o índice do valor central em cada linha
-    indice_central = n_janelamento // 2
+    # Inicializar a matriz para armazenar os blocos de amostras, com num_blocos linhas e n_janelamento colunas
+    matriz_amostras = np.zeros((num_blocos, n_janelamento))
 
     # Inicializar um array para armazenar as amplitudes associadas
-    amplitude_real = np.zeros(num_linhas)
+    amplitude_real = np.zeros(num_blocos)
 
-    # Preencher o array de amplitudes associadas
-    for i in range(num_linhas):
-        amplitude_real[i] = dados_amostras[i + indice_central, 2]
+    # Preencher a matriz com os blocos de amostras e calcular as amplitudes associadas
+    for i in range(num_blocos):
+        inicio = i * n_janelamento  # início do bloco atual
+        fim = inicio + n_janelamento  # fim do bloco atual
+        matriz_amostras[i] = dados_amostras[inicio:fim, 1]  # salva o bloco na matriz
+
+        # Calcular o índice central do bloco atual
+        indice_central = inicio + (n_janelamento // 2)
+
+        # Armazenar a amplitude da linha central do bloco atual
+        amplitude_real[i] = dados_amostras[indice_central, 2]
 
     return matriz_amostras, amplitude_real
 
 matriz_amostras, amplitude_real = montarMatrizSinaisEAmplitude(nome_arquivo_amostras, n_janelamento)
 
+print("Sinais\n",matriz_amostras)
+print("Amplitudes\n", amplitude_real)
 
 # np.savetxt("C:/Users/diogo/Desktop/Diogo(Estudos)/Mestrado/TEMC-Processamento-Avan-ado-de-Dados-para-Calorimetria-de-Altas-Energias1/FiltroOtimoContinuo/SinaisJanelados/sinaisJaneladosSemPedestal.txt", matriz_amostras, fmt="%.4f")
 # np.savetxt("C:/Users/diogo/Desktop/Diogo(Estudos)/Mestrado/TEMC-Processamento-Avan-ado-de-Dados-para-Calorimetria-de-Altas-Energias1/FiltroOtimoContinuo/SinaisJanelados/amplitudesJaneladas.txt", amplitude_real, fmt="%.4f")
@@ -274,10 +275,10 @@ mediaDesvioPadraoKFold = np.mean(desvioPadraoKfold)
 
 ################## SALVAR OS DADOS PARA O ARQUIVO REFERENTE AO KFOLD PARA MEDIA DA MEDIA E DESVIO PADRAO DO DESVIO PADRAO ##################
 # Caminho do arquivo de saída
-caminho_arquivo_mediaDaMedia = "C:/Users/diogo/Desktop/Diogo(Estudos)/Mestrado/TEMC-Processamento-Avan-ado-de-Dados-para-Calorimetria-de-Altas-Energias1/FiltroOtimoContinuo/Dados/MediaDaMedia.txt"
+caminho_arquivo_mediaDaMedia = "C:/Users/diogo/Desktop/Diogo(Estudos)/Mestrado/TEMC-Processamento-Avan-ado-de-Dados-para-Calorimetria-de-Altas-Energias1/FiltroOtimoContinuo/JanelamentoDiferente/Dados/MediaDaMedia.txt"
 
 # notebook
-# caminho_arquivo_mediaDaMedia= "C:/Users/diogo/OneDrive/Área de Trabalho/TEMC-Processamento-Avan-ado-de-Dados-para-Calorimetria-de-Altas-Energias1/FiltroOtimoContinuo/Dados/MediaDaMedia.txt"
+# caminho_arquivo_mediaDaMedia= "C:/Users/diogo/OneDrive/Área de Trabalho/TEMC-Processamento-Avan-ado-de-Dados-para-Calorimetria-de-Altas-Energias1/FiltroOtimoContinuo/JanelamentoDiferente/Dados/MediaDaMedia.txt"
 
 def atualizar_arquivo_media(caminho_arquivo_mediaDaMedia,n_janelamento, ocupacao, mediaDaMedia,desvioPadraoDoDesvioPadrao, mediaDesvioPadraoKFold):
     titulos = ["Janelamento", "Ocupacao", "MediaDaMedia", "DesvioPadraoDoDesvioPadrao", "MediaDesvioPadrão"]

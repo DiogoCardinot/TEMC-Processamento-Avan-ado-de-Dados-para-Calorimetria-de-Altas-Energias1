@@ -5,7 +5,7 @@ from sklearn.model_selection import KFold
 
 pedestal = 30
 n_janelamento = [7,13, 19]
-ocupacao = [90]
+ocupacao = [40]
 
 def estimarAmplitude(matriz_amostras, pesos):
     amplitude_estimada = []
@@ -62,30 +62,28 @@ for f in range(len(ocupacao)):
         def montarMatrizSinaisEAmplitude(nome_arquivo_amostras, n_janelamento):
             dados_amostras = np.genfromtxt(nome_arquivo_amostras, delimiter=",", skip_header=1)
 
-            # Calcular o número de linhas para a matriz
-            num_linhas = len(dados_amostras) - (n_janelamento - 1)
+            # Calcular o número de blocos de janelamento completos no arquivo
+            num_blocos = len(dados_amostras) // n_janelamento
 
-            # Inicializar a matriz para armazenar os blocos de amostras, com num_linhas linhas e n_janelamento colunas
-            matriz_amostras = np.zeros((num_linhas, n_janelamento))
-
-            # Preencher a matriz com os blocos de amostras
-            for i in range(num_linhas):
-                inicio = i  # começa no ponto atual
-                fim = i + n_janelamento  # vai até o ponto atual + n_janelamento
-                matriz_amostras[i] = dados_amostras[inicio:fim, 1]-pedestal  # salva a linha na matriz
-
-            # Calcular o índice do valor central em cada linha
-            indice_central = n_janelamento // 2
+            # Inicializar a matriz para armazenar os blocos de amostras, com num_blocos linhas e n_janelamento colunas
+            matriz_amostras = np.zeros((num_blocos, n_janelamento))
 
             # Inicializar um array para armazenar as amplitudes associadas
-            amplitude_real = np.zeros(num_linhas)
+            amplitude_real = np.zeros(num_blocos)
 
-            # Preencher o array de amplitudes associadas
-            for i in range(num_linhas):
-                amplitude_real[i] = dados_amostras[i + indice_central, 2]
+            # Preencher a matriz com os blocos de amostras e calcular as amplitudes associadas
+            for i in range(num_blocos):
+                inicio = i * n_janelamento  # início do bloco atual
+                fim = inicio + n_janelamento  # fim do bloco atual
+                matriz_amostras[i] = dados_amostras[inicio:fim, 1]  # salva o bloco na matriz
+
+                # Calcular o índice central do bloco atual
+                indice_central = inicio + (n_janelamento // 2)
+
+                # Armazenar a amplitude da linha central do bloco atual
+                amplitude_real[i] = dados_amostras[indice_central, 2]
 
             return matriz_amostras, amplitude_real
-
         matriz_amostras, amplitude_real = montarMatrizSinaisEAmplitude(nome_arquivo_amostras, n_janelamento[d])
 
 
@@ -174,9 +172,9 @@ for f in range(len(ocupacao)):
         # print("Erro estimacao: \n", erroEstimacaoKFold)
 
     plt.xlabel("Erro de estimação",fontsize=16)
-    plt.xlim(-350, 150)
+    plt.xlim(-200, 160)
     plt.ylabel("Frequência",fontsize=16)
-    plt.xticks(range(-350, 150, 50))
+    plt.xticks(range(-200, 160, 40))
     plt.title(f"Histograma do erro de estimação para "+ str(ocupacao[f])+ "% de ocupação" , fontsize=18)
     plt.legend(loc=0)
     plt.grid(True)

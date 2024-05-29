@@ -127,12 +127,6 @@ ocupacoes_desejadas = [0,10,20, 30,40,50,60,70,80,90,100] #lista de ocupacoes pa
 
 ###################################################################### PLOTS PARA MEDIA DA MEDIA #####################################################
 
-############################################### CARREGAR INFORMAÇÕES PARA MEDIA DA MEDIA ##################################################
-caminho_arquivo_dados = "C:/Users/diogo/Desktop/Diogo(Estudos)/Mestrado/TEMC-Processamento-Avan-ado-de-Dados-para-Calorimetria-de-Altas-Energias1/FiltroOtimoContinuo/Dados/MediaDaMedia.txt"
-
-# notebook
-# caminho_arquivo_dados= "C:/Users/diogo/OneDrive/Área de Trabalho/TEMC-Processamento-Avan-ado-de-Dados-para-Calorimetria-de-Altas-Energias1/FiltroOtimoContinuo/Dados/MediaDaMedia.txt"
-
 # Função para ler os dados organizados por ocupação
 def ler_dados_por_ocupacao(caminho_arquivo):
     dados = {}
@@ -241,16 +235,16 @@ def plotarMediaJanelamento(dados):
     plt.show()
 
 # Caminho para o arquivo de dados
-caminho_arquivo_dados = "C:/Users/diogo/Desktop/Diogo(Estudos)/Mestrado/TEMC-Processamento-Avan-ado-de-Dados-para-Calorimetria-de-Altas-Energias1/FiltroOtimoContinuo/Dados/MediaDaMedia.txt"
+caminho_arquivo_dados = "C:/Users/diogo/Desktop/Diogo(Estudos)/Mestrado/TEMC-Processamento-Avan-ado-de-Dados-para-Calorimetria-de-Altas-Energias1/FiltroOtimoContinuo/JanelamentoDiferente/Dados/MediaDaMedia.txt"
 
 # notebook
-# caminho_arquivo_dados= "C:/Users/diogo/OneDrive/Área de Trabalho/TEMC-Processamento-Avan-ado-de-Dados-para-Calorimetria-de-Altas-Energias1/FiltroOtimoContinuo/Dados/MediaDaMedia.txt" 
+# caminho_arquivo_dados= "C:/Users/diogo/OneDrive/Área de Trabalho/TEMC-Processamento-Avan-ado-de-Dados-para-Calorimetria-de-Altas-Energias1/FiltroOtimoContinuo/JanelamentoDiferente/Dados/MediaDaMedia.txt" 
 
 dadosParaCadaOcupacao = ler_dados_por_ocupacao(caminho_arquivo_dados)
 #media da media de cada ocupação para todos os janelamentos
-# plotarMediaDaMedia(dadosParaCadaOcupacao)
+plotarMediaDaMedia(dadosParaCadaOcupacao)
 #media do desvio padrão de cada ocupação para todos os janelamentos
-# plotarMediaDesvioPadrao(dadosParaCadaOcupacao)
+plotarMediaDesvioPadrao(dadosParaCadaOcupacao)
 
 #Dispersao por ocupação para todos os janelamentos
 dadosParaCadaJanelamento = ler_dados_por_janelamento(caminho_arquivo_dados)
