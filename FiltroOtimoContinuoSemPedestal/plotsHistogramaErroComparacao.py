@@ -20,6 +20,8 @@ plt.figure(figsize=(8, 6))
 for f in range(len(ocupacao)):
     mediaKfold = []  # Lista para armazenar as médias dos erros estimados de todos os janelamentos
     desvioPadraoKfold = []  # Lista para armazenar os desvios padrão dos erros estimados de todos os janelamentos
+    mediaKfoldOF1 =[]
+    desvioPadraoKfoldOF1 = []
 
     for d in range(len(n_janelamento)):
         ############################################### CARREGAR INFORMAÇÕES DO PULSO DE REFERÊNCIA E DERIVADA ##################################################
@@ -114,6 +116,23 @@ for f in range(len(ocupacao)):
 
             return A
 
+        # Montar matriz de coeficientes
+        def montarMatrizCoeficientesOF1(g, derivada_g, cov_matrix_ruido):
+            A = np.zeros((n_janelamento[d] + 2, n_janelamento[d] + 2))  # matriz A do sistema para encontrar os pesos
+
+            # Preencher as primeiras n_janelamento casas (tanto linhas como colunas) da matriz A com a matriz de covariância do ruído
+            for i in range(n_janelamento[d]):
+                for j in range(n_janelamento[d]):
+                    A[i][j] = cov_matrix_ruido[i][j]
+
+            for i in range(n_janelamento[d]):
+                A[i][n_janelamento[d]] = -g[i]
+                A[i][n_janelamento[d] + 1] = -derivada_g[i]
+                A[n_janelamento[d]][i] = g[i]
+                A[n_janelamento[d] + 1][i] = derivada_g[i]
+
+            return A
+
         def verificar_solucao(matrizA, matrizB):
             matrizAAmpliada = np.hstack((matrizA, matrizB))
             postoA = np.linalg.matrix_rank(matrizA)
@@ -131,25 +150,32 @@ for f in range(len(ocupacao)):
         cov_matrix_ruido = montarMatrizCovarianciaRuido(matriz_amostras)
         # Montar a matriz A
         A = montarMatrizCoeficientes(g, derivada_g, cov_matrix_ruido)
+        AOF1 = montarMatrizCoeficientesOF1(g,derivada_g, cov_matrix_ruido)
 
         # Definir o vetor B
         B = np.zeros((len(g) + 3, 1))
         B[len(g)] = 1
+        BOF1 = np.zeros((len(g) + 2, 1))
+        BOF1[len(g)] = 1
 
         # Processamento dos dados pelo KFold
         k = 100
         kf = KFold(n_splits=k)
         erroEstimacaoKFold = []  # Lista para armazenar os erros estimados do KFold
+        erroEstimacaoKFoldOF1 = []  # Lista para armazenar os erros estimados do KFold
         
         for fold, (train_index, test_index) in enumerate(kf.split(matriz_amostras)):
             matrizAmostrasTreino, matrizAmostrasTeste = matriz_amostras[train_index, :], matriz_amostras[test_index, :]
             amplitudeAmostrasTreino, amplitudeAmostrasTestes = amplitude_real[train_index], amplitude_real[test_index]
             covMatrizRuido = montarMatrizCovarianciaRuido(matrizAmostrasTreino)
             A_coeficientes = montarMatrizCoeficientes(g, derivada_g, covMatrizRuido)
+            A_coeficientesOF1 = montarMatrizCoeficientesOF1(g, derivada_g, covMatrizRuido)
             # Verificar a solução do sistema linear
             solucao_sistemaKFold = verificar_solucao(A_coeficientes, B)
+            solucao_sistemaKFoldOF1 = verificar_solucao(A_coeficientesOF1, BOF1)
             # Extrair o vetor de pesos (w)
             w_kfold = []
+            w_kfoldOF1 = []
             if type(solucao_sistemaKFold) != str:
                 for i in range(len(solucao_sistemaKFold)):
                     # adiciona dinamicamente ao vetor de pesos
@@ -157,27 +183,43 @@ for f in range(len(ocupacao)):
                         w_kfold.append(solucao_sistemaKFold[i][0])
             else:
                 print(solucao_sistemaKFold)
+            
+            if type(solucao_sistemaKFoldOF1) != str:
+                for i in range(len(solucao_sistemaKFoldOF1)):
+                    # adiciona dinamicamente ao vetor de pesos
+                    if (i <= len(g) - 1):
+                        w_kfoldOF1.append(solucao_sistemaKFoldOF1[i][0])
+            else:
+                print(solucao_sistemaKFold)
 
             # Calcular amplitude estimada para o conjunto de teste
             amplitude_estimadaTeste = estimarAmplitude(matrizAmostrasTeste, w_kfold)
+            amplitude_estimadaTesteOF1 = estimarAmplitude(matrizAmostrasTeste, w_kfoldOF1)
 
             # Calcular erro de estimativa para o conjunto de teste e armazenar na lista
             for k in range(len(amplitude_estimadaTeste)):
                 erroEstimacaoKFold.append(amplitude_estimadaTeste[k] - amplitudeAmostrasTestes[k])
             mediaKfold.append(np.mean(erroEstimacaoKFold))
             desvioPadraoKfold.append(np.std(erroEstimacaoKFold))
+
+            # Calcular erro de estimativa para o conjunto de teste e armazenar na lista
+            for k in range(len(amplitude_estimadaTesteOF1)):
+                erroEstimacaoKFoldOF1.append(amplitude_estimadaTesteOF1[k] - amplitudeAmostrasTestes[k])
+            mediaKfoldOF1.append(np.mean(erroEstimacaoKFoldOF1))
+            desvioPadraoKfoldOF1.append(np.std(erroEstimacaoKFoldOF1))
         # Plotar o histograma apenas para o valor atual de janelamento
         # plt.hist(erroEstimacaoKFold, bins=50, alpha=0.7, histtype='step', label=f"Janelamento: {n_janelamento[d]} ($\mu$= {mediaKfold[-1]:.3f},$\sigma$={desvioPadraoKfold[-1]:.3f} )")
-        plt.hist(erroEstimacaoKFold, bins=150, alpha=0.7, histtype='step', linewidth=2, label=f"Ocupação: {ocupacao[f]}\n$\mu$= {mediaKfold[-1]:.3f}\n$\sigma$={desvioPadraoKfold[-1]:.3f}")
+        plt.hist(erroEstimacaoKFoldOF1, bins=150, alpha=0.7, histtype='step', linewidth=2, label=f"OF1\nOcupação: {ocupacao[f]}\n$\mu$= {mediaKfoldOF1[-1]:.3f}\n$\sigma$={desvioPadraoKfoldOF1[-1]:.3f}")
+        plt.hist(erroEstimacaoKFold, bins=150, alpha=0.7, histtype='step', linewidth=2, label=f"OF2\nOcupação: {ocupacao[f]}\n$\mu$= {mediaKfold[-1]:.3f}\n$\sigma$={desvioPadraoKfold[-1]:.3f}")
         # print("Janelamento:", n_janelamento[d])
         # print("Ocupacao:", ocupacao[f])
         # print("Erro estimacao: \n", erroEstimacaoKFold)
 
     plt.xlabel("Erro de estimação",fontsize=16)
-    plt.xlim(-350, 150)
+    plt.xlim(-180, 100)
     plt.ylabel("Frequência",fontsize=16)
-    plt.xticks(range(-350, 150, 50))
-    plt.title(r'$Histograma$ $do$ $erro$ $de$ $estimação$ $OF2$' , fontsize=18)
+    plt.xticks(range(-180, 100, 20))
+    plt.title(r'$Histograma$ $do$ $erro$ $de$ $estimação$ $OF1$ $\times$ $OF2$' , fontsize=18)
     plt.legend(loc=0)
     plt.grid(True)
     plt.show()

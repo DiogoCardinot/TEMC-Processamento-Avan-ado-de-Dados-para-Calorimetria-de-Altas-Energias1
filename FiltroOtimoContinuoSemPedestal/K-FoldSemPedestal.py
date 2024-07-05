@@ -142,7 +142,7 @@ def montarMatrizCovarianciaRuido(matriz_amostras):
 #Montar matriz de coeficientes
 def montarMatrizCoeficientes(g, derivada_g, cov_matrix_ruido):
     n_janelamento = len(g)
-    A = np.zeros((n_janelamento+3, n_janelamento+3)) # matriz A do sistema para encontrar os pesos
+    A = np.zeros((n_janelamento+2, n_janelamento+2)) # matriz A do sistema para encontrar os pesos
 
     # Preencher as primeiras n_janelamento casas (tanto linhas como colunas) da matriz A com a matriz de covariância do ruído
     for i in range(n_janelamento):
@@ -152,12 +152,10 @@ def montarMatrizCoeficientes(g, derivada_g, cov_matrix_ruido):
     for i in range(n_janelamento):
         A[i][n_janelamento] =-g[i] 
         A[i][n_janelamento+1] = -derivada_g[i]
-        A[i][n_janelamento+2] = -1
         A[n_janelamento][i] = g[i]
         A[n_janelamento+1][i] = derivada_g[i]
-        A[n_janelamento+2][i] = 1
-
     return A
+
 
 def verificar_solucao(matrizA, matrizB):
     matrizAAmpliada = np.hstack((matrizA, matrizB))
@@ -180,7 +178,7 @@ A = montarMatrizCoeficientes(g, derivada_g, cov_matrix_ruido)
 
 
 # Definir o vetor B
-B = np.zeros((len(g) + 3, 1))
+B = np.zeros((len(g) + 2, 1))
 B[len(g)] = 1
 
 # Verificar a solução do sistema linear
@@ -273,10 +271,10 @@ mediaDesvioPadraoKFold = np.mean(desvioPadraoKfold)
 
 ################## SALVAR OS DADOS PARA O ARQUIVO REFERENTE AO KFOLD PARA MEDIA DA MEDIA E DESVIO PADRAO DO DESVIO PADRAO ##################
 # Caminho do arquivo de saída
-caminho_arquivo_mediaDaMedia = "C:/Users/diogo/Desktop/Diogo(Estudos)/Mestrado/TEMC-Processamento-Avan-ado-de-Dados-para-Calorimetria-de-Altas-Energias1/FiltroOtimoContinuo/Dados/MediaDaMedia.txt"
+caminho_arquivo_mediaDaMedia = "C:/Users/diogo/Desktop/Diogo(Estudos)/Mestrado/TEMC-Processamento-Avan-ado-de-Dados-para-Calorimetria-de-Altas-Energias1/FiltroOtimoContinuoSemPedestal/Dados/MediaDaMedia.txt"
 
 # notebook
-# caminho_arquivo_mediaDaMedia= "C:/Users/diogo/OneDrive/Área de Trabalho/TEMC-Processamento-Avan-ado-de-Dados-para-Calorimetria-de-Altas-Energias1/FiltroOtimoContinuo/Dados/MediaDaMedia.txt"
+# caminho_arquivo_mediaDaMedia= "C:/Users/diogo/OneDrive/Área de Trabalho/TEMC-Processamento-Avan-ado-de-Dados-para-Calorimetria-de-Altas-Energias1/FiltroOtimoContinuoSemPedestal/Dados/MediaDaMedia.txt"
 
 def atualizar_arquivo_media(caminho_arquivo_mediaDaMedia,n_janelamento, ocupacao, mediaDaMedia,desvioPadraoDoDesvioPadrao, mediaDesvioPadraoKFold):
     titulos = ["Janelamento", "Ocupacao", "MediaDaMedia", "DesvioPadraoDoDesvioPadrao", "MediaDesvioPadrão"]

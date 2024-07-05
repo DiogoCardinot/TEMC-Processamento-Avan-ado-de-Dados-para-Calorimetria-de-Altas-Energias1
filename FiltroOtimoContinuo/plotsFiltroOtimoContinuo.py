@@ -179,6 +179,7 @@ def ler_dados_por_janelamento(caminho_arquivo):
     return dados
 
 
+
 # Função para plotar os gráficos organizados por ocupação
 def plotarMediaDaMedia(dados):
     for ocupacao, info in dados.items():
@@ -198,10 +199,11 @@ def plotarMediaDesvioPadrao(dados):
         janelamentos = info['janelamentos']
         mediaDesvioPadrao = info['MediaDesvioPadrao']
         desvios = info['desvios']
-        plt.errorbar(janelamentos, mediaDesvioPadrao, yerr=desvios, fmt='-o', linestyle='dashed', label=f'Ocupação {ocupacao}')
-    plt.xlabel('Janelamento')
-    plt.ylabel('Média do desvio padrão do erro de estimação (ADC Count)')
-    plt.legend(loc=0)
+        plt.errorbar(janelamentos, mediaDesvioPadrao, yerr=desvios, fmt='-', label=f'Ocupação {ocupacao}')
+    plt.xlabel('Janelamento', fontsize=20)
+    plt.ylabel('Média do desvio padrão do erro de estimação (ADC Count)',fontsize=16)
+    plt.title(r'$Média$ $desvio$ $padrão$ $\times$ $Janelamento$ $(OF2)$', fontsize=21)
+    plt.legend(ncol=5, loc=0)
     plt.grid(True)
     plt.show()
 
@@ -216,11 +218,12 @@ def plotDispersao(dados):
         plt.errorbar(ocupacoes, medias, yerr=desvios, fmt='-o',linestyle='dashed',  label=f'Janelamento: {janelamento}')
     # Definindo o tamanho da figura
     
-    plt.xlabel('Ocupação', fontsize=18)
-    plt.ylabel('Dispersão', fontsize=18)
+    plt.xlabel('Ocupação', fontsize=20)
+    plt.ylabel('Dispersão', fontsize=20)
+    plt.title(r'$Dispersão$ $\times$ $Ocupação$ $(OF2)$', fontsize=21)
     plt.xticks(range(0, 101, 10), fontsize=18)
     plt.yticks(fontsize=18)  # Define o tamanho da fonte para os rótulos do eixo Y
-    plt.legend(loc=0)
+    plt.legend(ncol=5, loc=0)
     plt.grid(True)
     plt.show()
 
